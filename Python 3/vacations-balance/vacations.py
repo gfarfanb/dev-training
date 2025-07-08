@@ -8,6 +8,7 @@ import configparser as conf
 
 import re
 import argparse
+import collections
 
 
 SETTINGS = "settings.ini"
@@ -19,12 +20,11 @@ def load_workbook():
     parser.add_argument("-oc", "--override_calculation", nargs=2, action="append", help="Overrides a value of the especified file configuration entry")
     parser.add_argument("-s", "--select", action="store_true", help="Allows to select an employee from file. If the flag is not set, the calculation will be done for all employees")
     parser.add_argument("-w", "--write", action="store_true", help="Writes the balance in the file")
-    parser.add_argument("-r", "--ratio", action="store_true", help="Enables calculation based on ratio")
     args = parser.parse_args()
 
     config = conf.RawConfigParser()
     bundle_dir = path.abspath(path.dirname(__file__))
-    config.read( path.join(bundle_dir, SETTINGS))
+    config.read(path.join(bundle_dir, SETTINGS))
 
     override_config("File", args.override_file, config)
     override_config("Calculation", args.override_calculation, config)
@@ -51,7 +51,8 @@ def override_config(group, values, config):
         print("[{}:{}]".format(group, field_value[0]), "-",
               "'{}'".format(config[group][field_value[0]]),
               "replaced by",
-              "'{}'".format(field_value[1]))
+              "'{}'".format(field_value[1])
+              )
         config[group][field_value[0]] = field_value[1]
 
 
@@ -87,7 +88,7 @@ def get_employees(workbook, config):
     return employees
 
 
-def select_employee(employees, workbook):
+def select_employee(employees):
     if len(employees) == 0:
         print("There are no employees in the file")
         exit()
@@ -156,50 +157,58 @@ def get_taken_vacations(selected_employee, workbook, config):
     return vacations_per_year
 
 
-def get_balance(selected_employee, workbook, config, args):
+def get_balance_and_ratio(selected_employee, workbook, config):
     employee_sheet = workbook.sheets[selected_employee]
 
     start_date_value = employee_sheet[config["File"]["StartDateCell"]].value
     start_date_format = config["File"]["StartDateFormat"]
     start_date = datetime.strptime(start_date_value, start_date_format).date()
-
-    print()
-    print(selected_employee, "started on", start_date)
+    today = datetime.now()
 
     allowed_per_year = get_allowed_per_year(selected_employee, workbook, config)
     taken_vacations_per_year = get_taken_vacations(selected_employee, workbook, config)
 
-    today = datetime.now()
-
     total_days_year = int(config["Calculation"]["TotalDaysYear"])
     total_days_half_year = int(config["Calculation"]["TotalDaysHalfYear"])
 
-    pending_days = 0
-    exceeded_days = 0
+    previous_days_value = employee_sheet[config["File"]["PreviousVacationDaysCell"]].value
+    previous_days = int(previous_days_value) if previous_days_value != None else 0
 
-    for calculated_year, days_allowed in allowed_per_year.items():
+    pending_days = 0
+    exceeded_days = previous_days
+
+    taken_vacations = collections.OrderedDict(sorted(taken_vacations_per_year.items()))
+
+    print()
+    print("[{}]".format(selected_employee),
+          "started-on=", start_date,
+          "not-registered-vacation-days=", previous_days
+          )
+    print("Calculating balance...")
+
+    for calculated_year, taken_days in taken_vacations.items():
         anniversary_date = datetime(int(calculated_year), start_date.month, start_date.day)
-        expiration_date = anniversary_date + timedelta(days=(total_days_year + total_days_half_year))
+        taken_days_balance = taken_days + exceeded_days
+        exceeded_days = 0
 
         if today < anniversary_date:
-            print("Unfulfilled anniversary:", anniversary_date)
+            print("allowed-on-year[{}]=".format(calculated_year), allowed_days,
+                  "taken=", taken_days,
+                  "taken-balance=", taken_days_balance,
+                  "anniversary[UNFULFILLED]=", anniversary_date.date()
+                  )
+            exceeded_days += taken_days_balance
             continue
 
-        worked_days = (today - anniversary_date).days
-
-        if args.ratio and worked_days < total_days_year:
-            allowed_days = int((days_allowed / 365) * worked_days)
-        else:
-            allowed_days = days_allowed
-
-        taken_days = taken_vacations_per_year.get(calculated_year, 0) + exceeded_days
-        exceeded_days = 0
+        allowed_days = allowed_per_year.get(calculated_year, 0)
         leftovers_days = 0
 
-        if taken_days > allowed_days:
-            exceeded_days = taken_days - allowed_days
+        if taken_days_balance > allowed_days:
+            exceeded_days = taken_days_balance - allowed_days
         else:
-            leftovers_days = allowed_days - taken_days
+            leftovers_days = allowed_days - taken_days_balance
+
+        expiration_date = anniversary_date + timedelta(days=(total_days_year + total_days_half_year))
 
         if today < expiration_date:
             left_days_anniversary = (expiration_date - today).days
@@ -209,30 +218,69 @@ def get_balance(selected_employee, workbook, config, args):
             else:
                 pending_days += leftovers_days - left_days_anniversary
 
-        print("Year:", calculated_year,
-            "Allowed:", allowed_days,
-            "Taken:", taken_days,
-            "Expiration date:", expiration_date.date(),
-            "Exceeded days:", exceeded_days,
-            "Pending days:", pending_days)
+        print("allowed-on-year[{}]=".format(calculated_year), allowed_days,
+              "taken=", taken_days,
+              "taken-balance=", taken_days_balance,
+              "exceeded=", exceeded_days,
+              "pending=", pending_days,
+              "anniversary=", anniversary_date.date(),
+              "expiration=", expiration_date.date()
+              )
 
-    return (pending_days - exceeded_days)
+    return (pending_days - exceeded_days), get_ratio(start_date, allowed_per_year)
 
 
-def process_balance(selected_employee, balance, workbook, config, args):
-    print("Balance for {name}: {result}".format(name=selected_employee, result=balance))
+def get_ratio(start_date, allowed_per_year):
+    print("Calculating ratio...")
+    today = datetime.now()
+    anniversary_date = datetime(today.year, start_date.month, start_date.day)
+
+    if today < anniversary_date:
+        anniversary_date = datetime(today.year - 1, start_date.month, start_date.day)
+
+    worked_days = (today - anniversary_date).days
+    allowed_days = allowed_per_year.get(str(anniversary_date.year), 0)
+
+    if allowed_days == 0:
+        print("Not registered year for anniversary:", anniversary_date.date())
+        return 0
+
+    print("allowed-on-year[{}]=".format(anniversary_date.year), allowed_days,
+          "worked-days=", worked_days,
+          "anniversary[LAST]=", anniversary_date.date()
+          )
+
+    return int((allowed_days / 365) * worked_days)
+
+
+def process_balance(selected_employee, balance, ratio, workbook, config, args):
+    print("[{name}] Balance: {balance} Ratio: {ratio}".format(
+        name=selected_employee,
+        balance=balance,
+        ratio=ratio
+        ))
 
     if not args.write:
         return
 
     try:
         balance_cell = config["File"]["BalanceDaysCell"]
-        employee_sheet = workbook.sheets[selected_employee]
-        employee_sheet.range(balance_cell).value = balance
+        ratio_cell = config["File"]["RatioDaysCell"]
 
-        print("Updated sheet for {name}".format(name=selected_employee))
+        employee_sheet = workbook.sheets[selected_employee]
+
+        employee_sheet.range(balance_cell).value = balance
+        employee_sheet.range(ratio_cell).value = ratio
+
+        print("[{name}] Sheet update successful - Balance[{balance}] Ratio[{ratio}]".format(
+            name=selected_employee,
+            balance=balance_cell,
+            ratio=ratio_cell)
+            )
     except com_error as err:
-        print("Unable to write update sheet for {name} - {details}".format(name=selected_employee, details=err.args))
+        print("[{name}] Unable to write on sheet - {details}".format(
+            name=selected_employee,
+            details=err.args))
 
 
 def main():
@@ -241,15 +289,15 @@ def main():
     employees = get_employees(workbook, config)
 
     if args.select:
-        selected_employee = select_employee(employees, workbook)
-        balance = get_balance(selected_employee, workbook, config, args)
+        selected_employee = select_employee(employees)
+        balance, ratio = get_balance_and_ratio(selected_employee, workbook, config)
 
-        process_balance(selected_employee, balance, workbook, config, args)
+        process_balance(selected_employee, balance, ratio, workbook, config, args)
     else:
         for employee in employees:
-            balance = get_balance(employee, workbook, config, args)
+            balance, ratio = get_balance_and_ratio(employee, workbook, config)
 
-            process_balance(employee, balance, workbook, config, args)
+            process_balance(employee, balance, ratio, workbook, config, args)
 
     workbook.app.quit()
 
