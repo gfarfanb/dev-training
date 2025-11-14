@@ -1,17 +1,19 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from pywintypes import com_error
-from sys import argv, exit
-from os import path
+from sys import exit
+from shutil import copyfile
 
 import xlwings as xw
 import configparser as conf
 
+import os
 import re
 import argparse
 import collections
 
 
-SETTINGS = "settings.ini"
+DEFAULT_SETTINGS = "settings.ini"
+USER_SETTINGS = "vacations.ini"
 
 def load_workbook():
     parser = argparse.ArgumentParser()
@@ -23,8 +25,17 @@ def load_workbook():
     args = parser.parse_args()
 
     config = conf.RawConfigParser()
-    bundle_dir = path.abspath(path.dirname(__file__))
-    config.read(path.join(bundle_dir, SETTINGS))
+    bundle_dir = os.path.abspath(os.path.dirname(__file__))
+    working_dir = os.getcwd()
+
+    user_settings_path = os.path.join(working_dir, USER_SETTINGS)
+
+    print(user_settings_path)
+
+    if not os.path.exists(user_settings_path):
+        copyfile(os.path.join(bundle_dir, DEFAULT_SETTINGS), user_settings_path)
+
+    config.read(user_settings_path)
 
     override_config("File", args.override_file, config)
     override_config("Calculation", args.override_calculation, config)
@@ -37,7 +48,7 @@ def load_workbook():
         print("File not found: {}".format(file_path))
         exit()
     except KeyError:
-        print("Configuration file not found: {}".format(SETTINGS))
+        print("Configuration file not found: {}".format(user_settings_path))
         exit()
 
     return workbook, config, args
@@ -122,14 +133,32 @@ def get_allowed_per_year(selected_employee, workbook, config):
 
     year_column = get_column(config["File"]["AllowedDaysYearFirstCell"])
     year_index = get_index(config["File"]["AllowedDaysYearFirstCell"])
-    days_column = config["File"]["AllowedDaysValueColumn"]
+    days_column = config["File"]["AllowedDaysValueColumn"] if config["File"]["AllowedDaysValueColumn"] != None else ""
+    days_row = config["File"]["AllowedDaysValueRow"] if config["File"]["AllowedDaysValueRow"] != None else ""
 
-    while (employee_sheet.range(year_column + str(year_index)).value != None):
-        year = int(employee_sheet.range(year_column + str(year_index)).value)
-        days = int(employee_sheet.range(days_column + str(year_index)).value)
+    if days_column != "" and days_row != "":
+        raise ValueError("""
+                         Define only one property:
+                         'AllowedDaysValueColumn' for values on a column
+                         'AllowedDaysValueRow' for values on a row
+                         """)
 
-        allowed_per_year[str(year)] =  days
-        year_index += 1
+    if days_column != "":
+        while (employee_sheet.range(year_column + str(year_index)).value != None):
+            year = int(employee_sheet.range(year_column + str(year_index)).value)
+            days = int(employee_sheet.range(days_column + str(year_index)).value)
+
+            allowed_per_year[str(year)] =  days
+            year_index += 1
+
+    if days_row != "":
+        for column in employee_sheet.range(year_column + str(year_index)).expand('right'):
+            column_part = get_column(column.get_address(False, False))
+            year = int(column.value)
+            days = int(employee_sheet.range(column_part + str(days_row)).value)
+
+            allowed_per_year[str(year)] =  days
+            year_index += 1
 
     return allowed_per_year
 
@@ -162,7 +191,16 @@ def get_balance_and_ratio(selected_employee, workbook, config):
 
     start_date_value = employee_sheet[config["File"]["StartDateCell"]].value
     start_date_format = config["File"]["StartDateFormat"]
-    start_date = datetime.strptime(start_date_value, start_date_format).date()
+
+    if type(start_date_value) is datetime:
+        start_date = start_date_value.date()
+    elif type(start_date_value) is date:
+        start_date = start_date_value
+    elif type(start_date_value) is str:
+        start_date = datetime.strptime(start_date_value, start_date_format).date()
+    else:
+        raise ValueError("Unexpected type for 'StartDateCell': {typr}".format(type=type(start_date_value)))
+
     today = datetime.now()
 
     allowed_per_year = get_allowed_per_year(selected_employee, workbook, config)
@@ -171,8 +209,12 @@ def get_balance_and_ratio(selected_employee, workbook, config):
     total_days_year = int(config["Calculation"]["TotalDaysYear"])
     total_days_half_year = int(config["Calculation"]["TotalDaysHalfYear"])
 
+    # enjoyed_days_value = employee_sheet[config["File"]["EnjoyedVacationsDaysCell"]].value
+    # enjoyed_days = int(enjoyed_days_value) if enjoyed_days_value != None else 0
     previous_days_value = employee_sheet[config["File"]["PreviousVacationDaysCell"]].value
     previous_days = int(previous_days_value) if previous_days_value != None else 0
+
+    # previous_days = enjoyed_days + previous_days
 
     pending_days = 0
     exceeded_days = previous_days
@@ -286,18 +328,22 @@ def process_balance(selected_employee, balance, ratio, workbook, config, args):
 def main():
     workbook, config, args = load_workbook()
 
-    employees = get_employees(workbook, config)
+    try:
+        employees = get_employees(workbook, config)
 
-    if args.select:
-        selected_employee = select_employee(employees)
-        balance, ratio = get_balance_and_ratio(selected_employee, workbook, config)
+        if args.select:
+            selected_employee = select_employee(employees)
+            balance, ratio = get_balance_and_ratio(selected_employee, workbook, config)
 
-        process_balance(selected_employee, balance, ratio, workbook, config, args)
-    else:
-        for employee in employees:
-            balance, ratio = get_balance_and_ratio(employee, workbook, config)
+            process_balance(selected_employee, balance, ratio, workbook, config, args)
+        else:
+            for employee in employees:
+                balance, ratio = get_balance_and_ratio(employee, workbook, config)
 
-            process_balance(employee, balance, ratio, workbook, config, args)
+                process_balance(employee, balance, ratio, workbook, config, args)
+    except ValueError as err:
+        print("Unable to process workbook - {details}".format(
+            details=err.args))
 
     workbook.app.quit()
 
