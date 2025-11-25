@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="Archivo">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Abrir" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Salir" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Undo" />
+            <MenuItem mnemonicParsing="false" text="Redo" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Cut" />
+            <MenuItem mnemonicParsing="false" text="Copy" />
+            <MenuItem mnemonicParsing="false" text="Paste" />
+            <MenuItem mnemonicParsing="false" text="Delete" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Select All" />
+            <MenuItem mnemonicParsing="false" text="Unselect All" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+         <children>
+            <StackPane prefHeight="374.0" prefWidth="640.0">
+               <children>
+                  <Pane prefHeight="200.0" prefWidth="200.0" visible="false">
+                     <children>
+                        <Accordion layoutX="14.0" layoutY="14.0" prefHeight="345.0" prefWidth="610.0">
+                          <panes>
+                            <TitledPane animated="false" text="Hoja de control anual">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label layoutX="14.0" layoutY="14.0" text="Celda inicial de empleado " />
+                                          <TextField layoutX="179.0" layoutY="10.0" />
+                                          <Label layoutX="14.0" layoutY="46.0" text="Columna de días tomados" />
+                                          <TextField layoutX="180.0" layoutY="42.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </TitledPane>
+                            <TitledPane animated="false" text="Hoja de empleado">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label layoutX="14.0" layoutY="14.0" text="Celda de compañía" />
+                                          <TextField layoutX="191.0" layoutY="10.0" />
+                                          <TextField layoutX="191.0" layoutY="41.0" />
+                                          <Label layoutX="14.0" layoutY="45.0" text="Celda de fecha inicial" />
+                                          <Label layoutX="351.0" layoutY="45.0" text="Formato de fecha" />
+                                          <TextField layoutX="450.0" layoutY="41.0" />
+                                          <TextField layoutX="191.0" layoutY="72.0" />
+                                          <Label layoutX="14.0" layoutY="76.0" text="Celda de balance de días" />
+                                          <TextField layoutX="191.0" layoutY="103.0" />
+                                          <Label layoutX="14.0" layoutY="107.0" text="Celda de días disfrutados" />
+                                          <TextField layoutX="191.0" layoutY="134.0" />
+                                          <Label layoutX="14.0" layoutY="138.0" text="Celda de proporción de días" />
+                                          <Label layoutX="14.0" layoutY="169.0" text="Días permitidos" />
+                                          <Label layoutX="14.0" layoutY="196.0" text="Celda inicial de año" />
+                                          <TextField layoutX="191.0" layoutY="192.0" />
+                                          <CheckBox layoutX="351.0" layoutY="196.0" mnemonicParsing="false" text="Días en horizontal" />
+                                          <Label layoutX="14.0" layoutY="227.0" text="Columna de días" />
+                                          <TextField layoutX="192.0" layoutY="223.0" />
+                                          <Label layoutX="351.0" layoutY="227.0" text="Fila de días" />
+                                          <TextField disable="true" layoutX="451.0" layoutY="223.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </TitledPane>
+                            <TitledPane animated="false" text="Configuración para cálculo">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label layoutX="14.0" layoutY="14.0" text="Año base" />
+                                          <TextField layoutX="173.0" layoutY="10.0" />
+                                          <Label layoutX="14.0" layoutY="45.0" text="Total de días al año" />
+                                          <TextField layoutX="174.0" layoutY="41.0" />
+                                          <TextField layoutX="174.0" layoutY="73.0" />
+                                          <Label layoutX="11.0" layoutY="77.0" text="Total de días a medio año" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </TitledPane>
+                          </panes>
+                        </Accordion>
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <ListView layoutX="14.0" layoutY="50.0" prefHeight="310.0" prefWidth="200.0" />
+                        <Label layoutX="15.0" layoutY="18.0" prefHeight="17.0" prefWidth="610.0" />
+                        <TextField layoutX="396.0" layoutY="50.0" />
+                        <Label layoutX="227.0" layoutY="54.0" text="Compañía" />
+                        <Label layoutX="227.0" layoutY="84.0" text="Nombre" />
+                        <TextField layoutX="396.0" layoutY="80.0" />
+                        <Label layoutX="227.0" layoutY="114.0" text="Fecha de alta" />
+                        <TextField layoutX="396.0" layoutY="110.0" />
+                        <Label layoutX="226.0" layoutY="143.0" text="Días disfrutados" />
+                        <TextField layoutX="396.0" layoutY="139.0" />
+                        <TextField layoutX="396.0" layoutY="168.0" />
+                        <Label layoutX="226.0" layoutY="172.0" text="Proporción" />
+                        <TextField layoutX="396.0" layoutY="197.0" />
+                        <Label layoutX="226.0" layoutY="201.0" text="Saldo pendiente" />
+                        <TableView layoutX="226.0" layoutY="230.0" prefHeight="130.0" prefWidth="320.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="Año" />
+                            <TableColumn prefWidth="75.0" text="Días permitidos" />
+                              <TableColumn prefWidth="75.0" text="Días tomados" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </Pane>
+               </children>
+            </StackPane>
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>
