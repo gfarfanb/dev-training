@@ -1,5 +1,7 @@
 package com.legadi.ui.vacations;
 
+import java.net.URL;
+
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationEvent;
@@ -20,7 +22,7 @@ public class JavaFXApplication extends Application {
 
     @Override
     public void init() throws Exception {
-        ApplicationContextInitializer<GenericApplicationContext> initializer = new ApplicationContextInitializer<GenericApplicationContext>() {
+        ApplicationContextInitializer<GenericApplicationContext> initializer = new ApplicationContextInitializer<>() {
             @Override
             public void initialize(GenericApplicationContext genericApplicationContext) {
                 genericApplicationContext.registerBean(Application.class, () -> JavaFXApplication.this);
@@ -30,7 +32,8 @@ public class JavaFXApplication extends Application {
         };
         this.context = new SpringApplicationBuilder().sources(VacationsBalanceApplication.class)
             .initializers(initializer)
-            .build().run(getParameters().getRaw().toArray(new String[0]));
+            .build()
+            .run(getParameters().getRaw().toArray(new String[0]));
     }
 
     @Override
@@ -39,10 +42,8 @@ public class JavaFXApplication extends Application {
             this.context.publishEvent(new StageReadyEvent(primaryStage));
         }
 
-        FXMLLoader loader = new FXMLLoader(Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResource("vacations-ui.fxml"));
+        URL fxmlUrl = Thread.currentThread().getContextClassLoader().getResource("vacations-ui.fxml");
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
         VBox page = (VBox) loader.load();
         Scene scene = new Scene(page);
 
