@@ -7,9 +7,9 @@
 {
     "type": "java",
     "javaExec": "<JAVA_HOME>\\bin\\java.exe",
-    "name": "VacationsBalanceApplication",
+    "name": "MainApplication",
     "request": "launch",
-    "mainClass": "com.legadi.ui.vacations.VacationsBalanceApplication",
+    "mainClass": "com.legadi.ui.vacations.MainApplication",
     "projectName": "vacations-balance",
     "vmArgs": [
         "--module-path=<JAVAFX_SDK_HOME>\\lib",

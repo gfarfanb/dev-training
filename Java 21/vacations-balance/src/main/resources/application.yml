@@ -1,4 +1,4 @@
-spring:
+vacations:
   application:
     ui:
       title: Balance de vacaciones

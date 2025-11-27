@@ -1,15 +1,21 @@
-package com.legadi.ui.vacations.config.javafx;
+package com.legadi.ui.vacations;
+
+import java.io.IOException;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
-
-import com.legadi.ui.vacations.VacationsBalanceApplication;
+import org.springframework.core.io.Resource;
 
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class JavaFXApplication extends Application {
@@ -27,7 +33,7 @@ public class JavaFXApplication extends Application {
             }
         };
         this.context = new SpringApplicationBuilder()
-            .sources(VacationsBalanceApplication.class)
+            .sources(MainApplication.class)
             .initializers(initializer)
             .build()
             .run(getParameters().getRaw().toArray(new String[0]));
@@ -48,5 +54,45 @@ public class JavaFXApplication extends Application {
             this.context.close();
         }
         Platform.exit();
+    }
+
+    public static class StageListener implements ApplicationListener<StageReadyEvent> {
+
+        private final ApplicationContext applicationContext;
+        private final String applicationTitle;
+        private final Resource fxml;
+
+        public StageListener(ApplicationContext applicationContext, Resource fxml, String applicationTitle) {
+            this.applicationContext = applicationContext;
+            this.fxml = fxml;
+            this.applicationTitle = applicationTitle;
+        }
+
+        @Override
+        public void onApplicationEvent(StageReadyEvent stageReadyEvent) {
+            try {
+                Stage stage = stageReadyEvent.getStage();
+                FXMLLoader fxmlLoader = new FXMLLoader(fxml.getURL());
+                fxmlLoader.setControllerFactory(applicationContext::getBean);
+
+                Scene scene = new Scene(fxmlLoader.load());
+                stage.setScene(scene);
+                stage.setTitle(applicationTitle);
+                stage.show();
+            } catch (IOException ex) {
+                throw new IllegalStateException("Unable to load scene", ex);
+            }
+        }
+    }
+
+    public static class StageReadyEvent extends ApplicationEvent {
+
+        public Stage getStage() {
+            return Stage.class.cast(getSource());
+        }
+
+        public StageReadyEvent(Object source) {
+            super(source);
+        }
     }
 }
