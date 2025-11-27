@@ -1,10 +1,11 @@
-package com.legadi.ui.vacations;
+package com.legadi.ui.vacations.config.javafx;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
+
+import com.legadi.ui.vacations.VacationsBalanceApplication;
 
 import javafx.application.Application;
 import javafx.application.HostServices;
@@ -25,7 +26,8 @@ public class JavaFXApplication extends Application {
                 genericApplicationContext.registerBean(HostServices.class, () -> getHostServices());
             }
         };
-        this.context = new SpringApplicationBuilder().sources(VacationsBalanceApplication.class)
+        this.context = new SpringApplicationBuilder()
+            .sources(VacationsBalanceApplication.class)
             .initializers(initializer)
             .build()
             .run(getParameters().getRaw().toArray(new String[0]));
@@ -46,16 +48,5 @@ public class JavaFXApplication extends Application {
             this.context.close();
         }
         Platform.exit();
-    }
-
-    class StageReadyEvent extends ApplicationEvent {
-
-        public Stage getStage() {
-            return Stage.class.cast(getSource());
-        }
-
-        public StageReadyEvent(Object source) {
-            super(source);
-        }
     }
 }

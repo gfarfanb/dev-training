@@ -1,4 +1,4 @@
-package com.legadi.ui.vacations;
+package com.legadi.ui.vacations.config.javafx;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 @Component
-public class StageListener implements ApplicationListener<JavaFXApplication.StageReadyEvent> {
+public class StageListener implements ApplicationListener<StageReadyEvent> {
 
     private final ApplicationContext applicationContext;
     private final String applicationTitle;
@@ -28,7 +28,7 @@ public class StageListener implements ApplicationListener<JavaFXApplication.Stag
     }
 
     @Override
-    public void onApplicationEvent(JavaFXApplication.StageReadyEvent stageReadyEvent) {
+    public void onApplicationEvent(StageReadyEvent stageReadyEvent) {
         try {
             Stage stage = stageReadyEvent.getStage();
             FXMLLoader fxmlLoader = new FXMLLoader(fxml.getURL());
