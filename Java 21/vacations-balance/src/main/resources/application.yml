@@ -1,0 +1,5 @@
+spring:
+  application:
+    ui:
+      title: Balance de vacaciones
+      resource: classpath:/vacations-ui.fxml
