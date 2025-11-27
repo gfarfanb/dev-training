@@ -149,25 +149,25 @@
                   </Pane>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <ListView layoutX="14.0" layoutY="50.0" prefHeight="310.0" prefWidth="200.0" />
+                        <ListView layoutX="14.0" layoutY="50.0" prefHeight="310.0" prefWidth="314.0" />
                         <Label layoutX="15.0" layoutY="18.0" prefHeight="17.0" prefWidth="610.0" />
-                        <TextField layoutX="396.0" layoutY="50.0" />
-                        <Label layoutX="227.0" layoutY="54.0" text="Compañía" />
-                        <Label layoutX="227.0" layoutY="84.0" text="Nombre" />
-                        <TextField layoutX="396.0" layoutY="80.0" />
-                        <Label layoutX="227.0" layoutY="114.0" text="Fecha de alta" />
-                        <TextField layoutX="396.0" layoutY="110.0" />
-                        <Label layoutX="226.0" layoutY="143.0" text="Días disfrutados" />
-                        <TextField layoutX="396.0" layoutY="139.0" />
-                        <TextField layoutX="396.0" layoutY="168.0" />
-                        <Label layoutX="226.0" layoutY="172.0" text="Proporción" />
-                        <TextField layoutX="396.0" layoutY="197.0" />
-                        <Label layoutX="226.0" layoutY="201.0" text="Saldo pendiente" />
-                        <TableView layoutX="226.0" layoutY="230.0" prefHeight="130.0" prefWidth="320.0">
+                        <TextField layoutX="477.0" layoutY="50.0" />
+                        <Label layoutX="343.0" layoutY="54.0" text="Compañía" />
+                        <Label layoutX="341.0" layoutY="84.0" text="Nombre" />
+                        <TextField layoutX="477.0" layoutY="80.0" />
+                        <Label layoutX="342.0" layoutY="114.0" text="Fecha de alta" />
+                        <TextField layoutX="477.0" layoutY="110.0" />
+                        <Label layoutX="342.0" layoutY="143.0" text="Días disfrutados" />
+                        <TextField layoutX="477.0" layoutY="139.0" />
+                        <TextField layoutX="477.0" layoutY="168.0" />
+                        <Label layoutX="341.0" layoutY="172.0" text="Proporción" />
+                        <TextField layoutX="477.0" layoutY="197.0" />
+                        <Label layoutX="341.0" layoutY="201.0" text="Saldo pendiente" />
+                        <TableView layoutX="339.0" layoutY="230.0" prefHeight="130.0" prefWidth="291.0">
                           <columns>
                             <TableColumn prefWidth="75.0" text="Año" />
-                            <TableColumn prefWidth="75.0" text="Días permitidos" />
-                              <TableColumn prefWidth="75.0" text="Días tomados" />
+                            <TableColumn prefWidth="117.60003662109375" text="Días permitidos" />
+                              <TableColumn prefWidth="97.59991455078125" text="Días tomados" />
                           </columns>
                         </TableView>
                      </children>

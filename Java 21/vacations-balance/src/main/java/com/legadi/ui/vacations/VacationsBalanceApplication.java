@@ -1,5 +1,9 @@
 package com.legadi.ui.vacations;
 
+import java.net.URLClassLoader;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,8 +21,10 @@ public class VacationsBalanceApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(
-            VacationsBalanceApplication.class.getResource("vacations-ui.fxml"));
+        FXMLLoader loader = new FXMLLoader(Thread
+            .currentThread()
+            .getContextClassLoader()
+            .getResource("vacations-ui.fxml"));
         VBox page = (VBox) loader.load();
         Scene scene = new Scene(page);
 
