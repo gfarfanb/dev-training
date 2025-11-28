@@ -59,8 +59,8 @@ public class JavaFXApplication extends Application {
     public static class StageListener implements ApplicationListener<StageReadyEvent> {
 
         private final ApplicationContext applicationContext;
-        private final String applicationTitle;
         private final Resource fxml;
+        private final String applicationTitle;
 
         public StageListener(ApplicationContext applicationContext, Resource fxml, String applicationTitle) {
             this.applicationContext = applicationContext;

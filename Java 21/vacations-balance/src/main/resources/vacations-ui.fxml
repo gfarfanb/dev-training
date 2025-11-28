@@ -49,15 +49,16 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.legadi.ui.vacations.controller.MenuController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="Archivo">
           <items>
-            <MenuItem mnemonicParsing="false" text="Abrir" />
+            <MenuItem fx:id="fileMenu" mnemonicParsing="false" text="Abrir" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Salir" />
+            <MenuItem fx:id="quitMenu" mnemonicParsing="false" text="Salir" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Configuración">
