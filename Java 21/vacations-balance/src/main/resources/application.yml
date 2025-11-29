@@ -2,4 +2,8 @@ vacations:
   application:
     ui:
       title: Balance de vacaciones
-      resource: classpath:/vacations-ui.fxml
+      resource: classpath:\vacations-ui.fxml
+
+app:
+  config:
+    location: ${java.io.tmpdir}vacations-balance\config.json

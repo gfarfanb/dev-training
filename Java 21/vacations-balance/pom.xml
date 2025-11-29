@@ -19,6 +19,8 @@
         <java.version>21</java.version>
         <javafx.version>21.0.9</javafx.version>
         <javafx.maven.plugin.version>8.8.3</javafx.maven.plugin.version>
+        <poi.version>5.5.0</poi.version>
+        <jackson-databind.version>2.20.1</jackson-databind.version>
     </properties>
 
     <dependencies>
@@ -41,6 +43,22 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
         </dependency>
     </dependencies>
 
