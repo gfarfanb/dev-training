@@ -20,24 +20,31 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.legadi.ui.vacations.common.CellRef;
+import com.legadi.ui.vacations.common.ErrorMessage;
+import com.legadi.ui.vacations.exception.VacationsBalanceException;
 
 @Service
 public class ConfigService {
 
+    private final Logger logger = LoggerFactory.getLogger(ConfigService.class);
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String DEFAULT_SETTINGS = "settings.json";
 
-    private final Logger logger = LoggerFactory.getLogger(ConfigService.class);
-
     private final Map<String, Object> defaultProperties;
     private final Map<String, Object> configProperties;
+
     private final String configLocation;
+    private final ErrorMessage errorMessage;
 
     public ConfigService(
-            @Value("${app.config.location}") String configLocation) {
+            @Value("${app.config.location}") String configLocation,
+            ErrorMessage errorMessage) {
         this.defaultProperties = loadJsonInternal(DEFAULT_SETTINGS);
         this.configProperties = loadInitialConfig(configLocation, this.defaultProperties);
         this.configLocation = configLocation;
+        this.errorMessage = errorMessage;
     }
 
     private Map<String, Object> loadInitialConfig(String configLocation, Map<String, Object> defaultProperties) {
@@ -60,7 +67,7 @@ public class ConfigService {
                 return OBJECT_MAPPER.readValue(jsonInputStream, new TypeReference<>() {});
             }
         } catch(Exception ex) {
-            throw new IllegalStateException("Unable to obtain internal file: " + location, ex);
+            throw new VacationsBalanceException(errorMessage.getLoadJsonInternal(), location, ex);
         }
     }
 
@@ -69,7 +76,7 @@ public class ConfigService {
             logger.info("Loading JSON file: {}", location);
             return OBJECT_MAPPER.readValue(reader, new TypeReference<>() {});
         } catch(Exception ex) {
-            throw new IllegalStateException("Unable to read JSON file: " + location, ex);
+            throw new VacationsBalanceException(errorMessage.getLoadJsonFile(), location, ex);
         }
     }
 
@@ -78,7 +85,7 @@ public class ConfigService {
             OBJECT_MAPPER.writeValue(writer, content);
             logger.info("JSON file saved: {}", location);
         } catch(IOException ex) {
-            throw new IllegalStateException("Unable to write JSON file: " + location, ex);
+            throw new VacationsBalanceException(errorMessage.getWriteJsonFile(), location, ex);
         }
     }
 
@@ -88,7 +95,7 @@ public class ConfigService {
             Files.createDirectories(filePath.getParent());
             return filePath;
         } catch(IOException ex) {
-            throw new IllegalStateException("Unable to create directories for: " + location);
+            throw new VacationsBalanceException(errorMessage.getCreateDirs(), location);
         }
     }
 
@@ -105,18 +112,21 @@ public class ConfigService {
         return getValue(property, v -> v instanceof Integer);
     }
 
+    public CellRef getCell(String property) {
+        return new CellRef(get(property));
+    }
+
     @SuppressWarnings("unchecked")
     private <T> T getValue(String propertyName, Predicate<Object> typeValidation) {
         Object value = configProperties.getOrDefault(propertyName, defaultProperties.get(propertyName));
         if(value == null) {
-            throw new IllegalStateException("Property value not found for: " + propertyName);
+            throw new VacationsBalanceException(errorMessage.getPropertyNotFound(), propertyName);
         }
         if(typeValidation.test(value)) {
             return (T) value;
         } else {
-            throw new IllegalStateException("Invalid value type ["
-                + (value != null ? value.getClass() : "null")
-                +  "]: " + value);
+            throw new VacationsBalanceException(errorMessage.getInvalidDataType()
+                + " [" + (value != null ? value.getClass() : "null") +  "]", value);
         }
     }
 }

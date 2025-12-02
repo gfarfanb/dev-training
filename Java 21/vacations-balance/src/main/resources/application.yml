@@ -7,3 +7,19 @@ vacations:
 app:
   config:
     location: ${java.io.tmpdir}vacations-balance\config.json
+
+error:
+  messages:
+    load-json-internal: No se pudo cargar archivo interno
+    load-json-file: No se pudo cargar archivo
+    write-json-file: No se pudo escribir archivo
+    create-dirs: No se pudieron crear directorios
+    property-not-found: Propiedad no encontrada
+    invalid-data-type: Tipo de valor inválido
+    read-balance-file: No se pudo leer archivo de balance de vacaciones
+
+logging:
+  level:
+    root: INFO
+    com:
+      legadi: DEBUG

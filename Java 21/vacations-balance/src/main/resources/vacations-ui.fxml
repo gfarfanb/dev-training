@@ -50,7 +50,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.legadi.ui.vacations.controller.MenuController">
+    fx:controller="com.legadi.ui.vacations.controller.AppController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -136,7 +136,7 @@
                   </Pane>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <ListView layoutX="14.0" layoutY="50.0" prefHeight="310.0" prefWidth="314.0" />
+                        <ListView fx:id="employeeList" layoutX="14.0" layoutY="50.0" prefHeight="310.0" prefWidth="314.0" />
                         <Label layoutX="15.0" layoutY="18.0" prefHeight="17.0" prefWidth="610.0" />
                         <TextField layoutX="477.0" layoutY="50.0" />
                         <Label layoutX="343.0" layoutY="54.0" text="Compañía" />
