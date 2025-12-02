@@ -61,9 +61,14 @@
             <MenuItem fx:id="quitMenu" mnemonicParsing="false" text="Salir" />
           </items>
         </Menu>
+        <Menu mnemonicParsing="false" text="Empleado">
+          <items>
+            <MenuItem fx:id="balanceMenu" mnemonicParsing="false" text="Balance" />
+          </items>
+        </Menu>
         <Menu mnemonicParsing="false" text="Configuración">
           <items>
-            <MenuItem mnemonicParsing="false" text="Ajustar" />
+            <MenuItem fx:id="configMenu" mnemonicParsing="false" text="Ajustar" />
           </items>
         </Menu>
       </menus>
@@ -137,24 +142,24 @@
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
                         <ListView fx:id="employeeList" layoutX="14.0" layoutY="50.0" prefHeight="310.0" prefWidth="314.0" />
-                        <Label layoutX="15.0" layoutY="18.0" prefHeight="17.0" prefWidth="610.0" />
-                        <TextField layoutX="477.0" layoutY="50.0" />
+                        <Label fx:id="fileLabel" layoutX="15.0" layoutY="18.0" prefHeight="17.0" prefWidth="610.0" />
                         <Label layoutX="343.0" layoutY="54.0" text="Compañía" />
+                        <TextField fx:id="companyField" layoutX="477.0" layoutY="50.0" />
                         <Label layoutX="341.0" layoutY="84.0" text="Nombre" />
-                        <TextField layoutX="477.0" layoutY="80.0" />
+                        <TextField fx:id="nameField" layoutX="477.0" layoutY="80.0" />
                         <Label layoutX="342.0" layoutY="114.0" text="Fecha de alta" />
-                        <TextField layoutX="477.0" layoutY="110.0" />
+                        <TextField fx:id="startField" layoutX="477.0" layoutY="110.0" />
                         <Label layoutX="342.0" layoutY="143.0" text="Días disfrutados" />
-                        <TextField layoutX="477.0" layoutY="139.0" />
-                        <TextField layoutX="477.0" layoutY="168.0" />
+                        <TextField fx:id="previousField" layoutX="477.0" layoutY="139.0" />
                         <Label layoutX="341.0" layoutY="172.0" text="Proporción" />
-                        <TextField layoutX="477.0" layoutY="197.0" />
+                        <TextField fx:id="ratioField" layoutX="477.0" layoutY="168.0" />
                         <Label layoutX="341.0" layoutY="201.0" text="Saldo pendiente" />
-                        <TableView layoutX="339.0" layoutY="230.0" prefHeight="130.0" prefWidth="291.0">
+                        <TextField fx:id="balanceField" layoutX="477.0" layoutY="197.0" />
+                        <TableView fx:id="yearTable" layoutX="339.0" layoutY="230.0" prefHeight="130.0" prefWidth="291.0">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="Año" />
-                            <TableColumn prefWidth="117.60003662109375" text="Días permitidos" />
-                              <TableColumn prefWidth="97.59991455078125" text="Días tomados" />
+                            <TableColumn fx:id="yearColumn" prefWidth="75.0" text="Año" />
+                            <TableColumn fx:id="allowedColumn" prefWidth="117.60003662109375" text="Días permitidos" />
+                            <TableColumn fx:id="takenColumn" prefWidth="97.59991455078125" text="Días tomados" />
                           </columns>
                         </TableView>
                      </children>

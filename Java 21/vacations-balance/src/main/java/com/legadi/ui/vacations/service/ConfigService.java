@@ -22,7 +22,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.legadi.ui.vacations.common.CellRef;
 import com.legadi.ui.vacations.common.ErrorMessage;
-import com.legadi.ui.vacations.exception.VacationsBalanceException;
 
 @Service
 public class ConfigService {
@@ -36,14 +35,17 @@ public class ConfigService {
     private final Map<String, Object> configProperties;
 
     private final String configLocation;
+    private final AlertService alertService;
     private final ErrorMessage errorMessage;
 
     public ConfigService(
             @Value("${app.config.location}") String configLocation,
+            AlertService alertService,
             ErrorMessage errorMessage) {
         this.defaultProperties = loadJsonInternal(DEFAULT_SETTINGS);
         this.configProperties = loadInitialConfig(configLocation, this.defaultProperties);
         this.configLocation = configLocation;
+        this.alertService = alertService;
         this.errorMessage = errorMessage;
     }
 
@@ -67,7 +69,9 @@ public class ConfigService {
                 return OBJECT_MAPPER.readValue(jsonInputStream, new TypeReference<>() {});
             }
         } catch(Exception ex) {
-            throw new VacationsBalanceException(errorMessage.getLoadJsonInternal(), location, ex);
+            String message = String.format("%s: %s", errorMessage.getLoadJsonInternal(), location);
+            logger.error(message, ex);
+            return alertService.error(null, message);
         }
     }
 
@@ -76,7 +80,9 @@ public class ConfigService {
             logger.info("Loading JSON file: {}", location);
             return OBJECT_MAPPER.readValue(reader, new TypeReference<>() {});
         } catch(Exception ex) {
-            throw new VacationsBalanceException(errorMessage.getLoadJsonFile(), location, ex);
+            String message = String.format("%s: %s", errorMessage.getLoadJsonFile(), location);
+            logger.error(message, ex);
+            return alertService.error(null, message);
         }
     }
 
@@ -85,7 +91,9 @@ public class ConfigService {
             OBJECT_MAPPER.writeValue(writer, content);
             logger.info("JSON file saved: {}", location);
         } catch(IOException ex) {
-            throw new VacationsBalanceException(errorMessage.getWriteJsonFile(), location, ex);
+            String message = String.format("%s: %s", errorMessage.getWriteJsonFile(), location);
+            logger.error(message, ex);
+            alertService.error(null, message);
         }
     }
 
@@ -95,7 +103,9 @@ public class ConfigService {
             Files.createDirectories(filePath.getParent());
             return filePath;
         } catch(IOException ex) {
-            throw new VacationsBalanceException(errorMessage.getCreateDirs(), location);
+            String message = String.format("%s: %s", errorMessage.getCreateDirs(), location);
+            logger.error(message, ex);
+            return alertService.error(null, message);
         }
     }
 
@@ -120,13 +130,15 @@ public class ConfigService {
     private <T> T getValue(String propertyName, Predicate<Object> typeValidation) {
         Object value = configProperties.getOrDefault(propertyName, defaultProperties.get(propertyName));
         if(value == null) {
-            throw new VacationsBalanceException(errorMessage.getPropertyNotFound(), propertyName);
+            String message = String.format("%s: %s", errorMessage.getPropertyNotFound(), propertyName);
+            return alertService.error(null, message);
         }
         if(typeValidation.test(value)) {
             return (T) value;
         } else {
-            throw new VacationsBalanceException(errorMessage.getInvalidDataType()
-                + " [" + (value != null ? value.getClass() : "null") +  "]", value);
+            String message = String.format("%s: [%s] %s", errorMessage.getInvalidDataType(),
+                (value != null ? value.getClass() : "null"), value);
+            return alertService.error(null, message);
         }
     }
 }

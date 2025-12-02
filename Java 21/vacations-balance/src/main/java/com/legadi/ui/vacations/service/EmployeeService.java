@@ -7,7 +7,7 @@ import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_TAKEN_DAYS_CO
 import static com.legadi.ui.vacations.common.Utils.isNumber;
 
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -28,8 +28,10 @@ import org.springframework.stereotype.Service;
 import com.legadi.ui.vacations.common.CellRef;
 import com.legadi.ui.vacations.common.CellValue;
 import com.legadi.ui.vacations.common.ErrorMessage;
-import com.legadi.ui.vacations.exception.VacationsBalanceException;
 import com.legadi.ui.vacations.model.Employee;
+import com.legadi.ui.vacations.model.EmployeeBalance;
+import com.legadi.ui.vacations.model.EmployeeYear;
+import com.legadi.ui.vacations.model.YearRecord;
 
 @Service
 public class EmployeeService {
@@ -37,37 +39,65 @@ public class EmployeeService {
     private final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
     private final ConfigService configService;
+    private final AlertService alertService;
     private final ErrorMessage errorMessage;
 
     public EmployeeService(ConfigService configService,
+            AlertService alertService,
             ErrorMessage errorMessage) {
         this.configService = configService;
+        this.alertService = alertService;
         this.errorMessage = errorMessage;
     }
 
-    public List<Employee> getEmployees() {
+    public EmployeeBalance getEmployeeBalance(EmployeeYear employeeYear) {
+        return readFile(workbook -> getEmployeeBalance(employeeYear, workbook), null);
+    }
+
+    public List<EmployeeYear> getEmployeesWithTakenDays() {
+        return readFile(workbook -> {
+            Map<String, EmployeeYear> employees = getEmployeesWithTakenDays(workbook);
+
+            return employees.values()
+                .stream()
+                .sorted(Comparator.comparing(EmployeeYear::getName))
+                .toList();
+        }, Lists.newArrayList());
+    }
+
+    private <T> T readFile(FileProcessor<T> processor, T defaultValue) {
         String balanceFile = configService.get(FILE_TO_ANALYZE_LOCATION);
 
         try (FileInputStream file = new FileInputStream(balanceFile);
                 Workbook workbook = WorkbookFactory.create(file)) {
-            Map<String, Employee> employees = getEmployeeAndTakenDays(workbook);
-
-            return employees.values()
-                .stream()
-                .sorted(Comparator.comparing(Employee::getName))
-                .toList();
-        } catch (IOException ex) {
-            throw new VacationsBalanceException(errorMessage.getReadBalanceFile(), balanceFile, ex);
+            return processor.apply(workbook);
+        } catch (Exception ex) {
+            String message = String.format("%s: %s", errorMessage.getReadBalanceFile(), balanceFile);
+            logger.error(message, ex);
+            alertService.warn(null, message);
+            return defaultValue;
         }
     }
 
-    private Map<String, Employee> getEmployeeAndTakenDays(Workbook workbook) {
+    private EmployeeBalance getEmployeeBalance(EmployeeYear employeeYear, Workbook workbook) {
+        EmployeeBalance employeeBalance = new EmployeeBalance();
+        employeeBalance.setCompanyName("Company");
+        employeeBalance.setName(employeeYear.getName());
+        employeeBalance.setBalanceDays(5);
+        employeeBalance.setPreviousVacationDays(6);
+        employeeBalance.setRatioDays(7);
+        employeeBalance.setStartDate(LocalDate.now());
+        employeeBalance.setYearRecords(employeeYear.getYearRecords());
+        return employeeBalance;
+    }
+
+    private Map<String, EmployeeYear> getEmployeesWithTakenDays(Workbook workbook) {
         CellRef employeeFirstCell = configService.getCell(EMPLOYEE_NAME_FIRST_CELL);
         CellRef totalTakenCol = configService.getCell(TOTAL_TAKEN_DAYS_COLUMN);
         int baseYear = configService.getInt(BASE_YEAR);
         
         CellValue cellValue = new CellValue(workbook);
-        Map<String, Employee> employees = new HashMap<>();
+        Map<String, EmployeeYear> employees = new HashMap<>();
 
         for(int i = 0; i < workbook.getNumberOfSheets(); i++) {
             Sheet sheet = workbook.getSheetAt(i);
@@ -77,10 +107,10 @@ public class EmployeeService {
 
                 logger.debug("Reading sheet: {}", sheet.getSheetName());
 
-                Map<String, Employee> employeesOnYear = findEmployees(cellValue,
+                Map<String, EmployeeYear> employeesOnYear = findEmployees(cellValue,
                     employeeFirstCell, totalTakenCol, sheet);
 
-                employeesOnYear.forEach((k, v) -> employees.merge(k, v, mergeEmployee()));
+                employeesOnYear.forEach((k, v) -> employees.merge(k, v, mergeEmployeeYear()));
 
                 logger.debug("Extracted names for sheet [{}]: {}", sheet.getSheetName(), employees.keySet());
             } else {
@@ -91,50 +121,54 @@ public class EmployeeService {
         return employees;
     }
 
-    private Map<String, Employee> findEmployees(CellValue cellValue, CellRef employeeFirstCell,
+    private Map<String, EmployeeYear> findEmployees(CellValue cellValue, CellRef employeeFirstCell,
             CellRef totalTakenCol, Sheet sheet) {
         int year = Integer.parseInt(sheet.getSheetName());
         return StreamSupport.stream(sheet.spliterator(), false)
             .filter(row -> row.getRowNum() >= employeeFirstCell.getRow())
             .filter(row -> hasTakenDays(cellValue, totalTakenCol, row))
             .map(row -> toTakenByEmployee(cellValue, employeeFirstCell, totalTakenCol, year, row))
-            .collect(Collectors.toMap(Employee::getName, e -> e, mergeEmployee()));
+            .collect(Collectors.toMap(Employee::getName, e -> e, mergeEmployeeYear()));
     }
 
     private boolean hasTakenDays(CellValue cellValue, CellRef totalTakenCol, Row row) {
         return isNumber(cellValue.asString(row.getCell(totalTakenCol.getCol())));
     }
 
-    private Employee toTakenByEmployee(CellValue cellValue, CellRef employeeFirstCell,
+    private EmployeeYear toTakenByEmployee(CellValue cellValue, CellRef employeeFirstCell,
             CellRef totalTakenCol, int year, Row row) {
         String name = cellValue.asString(row.getCell(employeeFirstCell.getCol()));
         int totalTaken = cellValue.asInt(row.getCell(totalTakenCol.getCol()));
-        Employee employee = new Employee();
+        EmployeeYear employee = new EmployeeYear();
         employee.setName(name);
-        employee.getTakenByYear().put(year, totalTaken);
+        employee.setYearRecords(new HashMap<>());
+        YearRecord yearRecord = new YearRecord();
+        yearRecord.setYear(year);
+        yearRecord.setTakenByYear(totalTaken);
+        employee.getYearRecords().put(year, yearRecord);
         return employee;
     }
 
-    private BinaryOperator<Employee> mergeEmployee() {
+    private BinaryOperator<EmployeeYear> mergeEmployeeYear() {
         return (e1, e2) -> {
-            if(StringUtils.isBlank(e1.getCompanyName())) {
-                e1.setCompanyName(e2.getCompanyName());
-            }
-            if(e1.getStartDate() == null) {
-                e1.setStartDate(e2.getStartDate());
-            }
-            if(e1.getPreviousVacationDays() != e2.getPreviousVacationDays()) {
-                e1.setPreviousVacationDays(e2.getPreviousVacationDays());
-            }
-            if(e1.getBalanceDays() != e2.getBalanceDays()) {
-                e1.setBalanceDays(e2.getBalanceDays());
-            }
-            if(e1.getRatioDays() != e2.getRatioDays()) {
-                e1.setRatioDays(e2.getRatioDays());
-            }
-            e1.getAllowedByYear().putAll(e2.getAllowedByYear());
-            e1.getTakenByYear().putAll(e2.getTakenByYear());
+            e1.getYearRecords().values().forEach(left -> {
+                YearRecord right = e2.getYearRecords().getOrDefault(left.getYear(), new YearRecord());
+                if(left.getAllowedByYear() == 0) {
+                    left.setAllowedByYear(right.getAllowedByYear());
+                }
+                if(left.getTakenByYear() == 0) {
+                    left.setTakenByYear(right.getTakenByYear());
+                }
+            });
+            e2.getYearRecords().keySet().removeAll(e1.getYearRecords().keySet());
+            e1.getYearRecords().putAll(e2.getYearRecords());
             return e1;
         };
+    }
+
+    @FunctionalInterface
+    public static interface FileProcessor<T> {
+
+        T apply(Workbook workbook) throws Exception;
     }
 }

@@ -17,6 +17,7 @@ error:
     property-not-found: Propiedad no encontrada
     invalid-data-type: Tipo de valor inválido
     read-balance-file: No se pudo leer archivo de balance de vacaciones
+    balance-not-found: Balance no encontrado para empleado
 
 logging:
   level:
