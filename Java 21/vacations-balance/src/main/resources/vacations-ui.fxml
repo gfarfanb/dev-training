@@ -75,71 +75,9 @@
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
-            <StackPane prefHeight="374.0" prefWidth="640.0">
+            <StackPane fx:id="mainStack" prefHeight="374.0" prefWidth="640.0">
                <children>
-                  <Pane prefHeight="200.0" prefWidth="200.0" visible="false">
-                     <children>
-                        <Accordion layoutX="14.0" layoutY="14.0" prefHeight="345.0" prefWidth="610.0">
-                          <panes>
-                            <TitledPane animated="false" text="Hoja de control anual">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                       <children>
-                                          <Label layoutX="14.0" layoutY="14.0" text="Celda inicial de empleado " />
-                                          <TextField layoutX="179.0" layoutY="10.0" />
-                                          <Label layoutX="14.0" layoutY="46.0" text="Columna de días tomados" />
-                                          <TextField layoutX="180.0" layoutY="42.0" />
-                                       </children>
-                                    </AnchorPane>
-                              </content>
-                            </TitledPane>
-                            <TitledPane animated="false" text="Hoja de empleado">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                       <children>
-                                          <Label layoutX="14.0" layoutY="14.0" text="Celda de compañía" />
-                                          <TextField layoutX="191.0" layoutY="10.0" />
-                                          <TextField layoutX="191.0" layoutY="41.0" />
-                                          <Label layoutX="14.0" layoutY="45.0" text="Celda de fecha inicial" />
-                                          <Label layoutX="351.0" layoutY="45.0" text="Formato de fecha" />
-                                          <TextField layoutX="450.0" layoutY="41.0" />
-                                          <TextField layoutX="191.0" layoutY="72.0" />
-                                          <Label layoutX="14.0" layoutY="76.0" text="Celda de balance de días" />
-                                          <TextField layoutX="191.0" layoutY="103.0" />
-                                          <Label layoutX="14.0" layoutY="107.0" text="Celda de días disfrutados" />
-                                          <TextField layoutX="191.0" layoutY="134.0" />
-                                          <Label layoutX="14.0" layoutY="138.0" text="Celda de proporción de días" />
-                                          <Label layoutX="14.0" layoutY="169.0" text="Días permitidos" />
-                                          <Label layoutX="14.0" layoutY="196.0" text="Celda inicial de año" />
-                                          <TextField layoutX="191.0" layoutY="192.0" />
-                                          <CheckBox layoutX="351.0" layoutY="196.0" mnemonicParsing="false" text="Días en horizontal" />
-                                          <Label layoutX="14.0" layoutY="227.0" text="Columna de días" />
-                                          <TextField layoutX="192.0" layoutY="223.0" />
-                                          <Label layoutX="351.0" layoutY="227.0" text="Fila de días" />
-                                          <TextField disable="true" layoutX="451.0" layoutY="223.0" />
-                                       </children>
-                                    </AnchorPane>
-                              </content>
-                            </TitledPane>
-                            <TitledPane animated="false" text="Configuración para cálculo">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                       <children>
-                                          <Label layoutX="14.0" layoutY="14.0" text="Año base" />
-                                          <TextField layoutX="173.0" layoutY="10.0" />
-                                          <Label layoutX="14.0" layoutY="45.0" text="Total de días al año" />
-                                          <TextField layoutX="174.0" layoutY="41.0" />
-                                          <TextField layoutX="174.0" layoutY="73.0" />
-                                          <Label layoutX="11.0" layoutY="77.0" text="Total de días a medio año" />
-                                       </children>
-                                    </AnchorPane>
-                              </content>
-                            </TitledPane>
-                          </panes>
-                        </Accordion>
-                     </children>
-                  </Pane>
-                  <Pane prefHeight="200.0" prefWidth="200.0">
+                  <Pane fx:id="balancePane" prefHeight="200.0" prefWidth="200.0">
                      <children>
                         <ListView fx:id="employeeList" layoutX="14.0" layoutY="50.0" prefHeight="310.0" prefWidth="314.0" />
                         <Label fx:id="fileLabel" layoutX="15.0" layoutY="18.0" prefHeight="17.0" prefWidth="610.0" />
@@ -162,6 +100,68 @@
                             <TableColumn fx:id="takenColumn" prefWidth="97.59991455078125" text="Días tomados" />
                           </columns>
                         </TableView>
+                     </children>
+                  </Pane>
+                  <Pane fx:id="configPane" prefHeight="200.0" prefWidth="200.0" visible="false">
+                     <children>
+                        <Accordion layoutX="14.0" layoutY="14.0" prefHeight="345.0" prefWidth="610.0">
+                          <panes>
+                            <TitledPane animated="false" text="Hoja de control anual">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label layoutX="14.0" layoutY="14.0" text="Celda inicial de empleado " />
+                                          <TextField layoutX="179.0" layoutY="10.0" />
+                                          <Label layoutX="14.0" layoutY="46.0" text="Columna de días tomados" />
+                                          <TextField layoutX="180.0" layoutY="42.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </TitledPane>
+                            <TitledPane animated="false" text="Hoja de empleado">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label layoutX="14.0" layoutY="14.0" text="Celda de compañía" />
+                                          <TextField fx:id="configCompanyField" layoutX="191.0" layoutY="10.0" />
+                                          <Label layoutX="14.0" layoutY="45.0" text="Celda de fecha inicial" />
+                                          <TextField fx:id="configStartField" layoutX="191.0" layoutY="41.0" />
+                                          <Label layoutX="351.0" layoutY="45.0" text="Formato de fecha" />
+                                          <TextField fx:id="configFormatField" layoutX="450.0" layoutY="41.0" />
+                                          <Label layoutX="14.0" layoutY="76.0" text="Celda de balance de días" />
+                                          <TextField fx:id="configBalanceField" layoutX="191.0" layoutY="72.0" />
+                                          <Label layoutX="14.0" layoutY="107.0" text="Celda de días disfrutados" />
+                                          <TextField fx:id="configPreviousField" layoutX="191.0" layoutY="103.0" />
+                                          <Label layoutX="14.0" layoutY="138.0" text="Celda de proporción de días" />
+                                          <TextField layoutX="191.0" layoutY="134.0" />
+                                          <Label layoutX="14.0" layoutY="169.0" text="Días permitidos" />
+                                          <Label layoutX="14.0" layoutY="196.0" text="Celda inicial de año" />
+                                          <TextField fx:id="configYearField" layoutX="191.0" layoutY="192.0" />
+                                          <CheckBox fx:id="configHorizontalCheck" layoutX="351.0" layoutY="196.0" mnemonicParsing="false" text="Días en horizontal" />
+                                          <Label layoutX="14.0" layoutY="227.0" text="Columna de días" />
+                                          <TextField fx:id="configColDaysField" layoutX="192.0" layoutY="223.0" />
+                                          <Label layoutX="351.0" layoutY="227.0" text="Fila de días" />
+                                          <TextField fx:id="configRowDaysField" disable="true" layoutX="451.0" layoutY="223.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </TitledPane>
+                            <TitledPane animated="false" text="Configuración para cálculo">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label layoutX="14.0" layoutY="14.0" text="Año base" />
+                                          <TextField fx:id="configBaseYearField" layoutX="173.0" layoutY="10.0" />
+                                          <Label layoutX="14.0" layoutY="45.0" text="Total de días al año" />
+                                          <TextField fx:id="configTotalYearField" layoutX="174.0" layoutY="41.0" />
+                                          <Label layoutX="11.0" layoutY="77.0" text="Total de días a medio año" />
+                                          <TextField fx:id="configHalfYearField" layoutX="174.0" layoutY="73.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </TitledPane>
+                          </panes>
+                        </Accordion>
                      </children>
                   </Pane>
                </children>

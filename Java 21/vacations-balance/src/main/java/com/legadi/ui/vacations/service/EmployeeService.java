@@ -1,17 +1,20 @@
 package com.legadi.ui.vacations.service;
 
 import static com.legadi.ui.vacations.common.ConfigConstants.BASE_YEAR;
+import static com.legadi.ui.vacations.common.ConfigConstants.COMPANY_NAME_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.EMPLOYEE_NAME_FIRST_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.FILE_TO_ANALYZE_LOCATION;
+import static com.legadi.ui.vacations.common.ConfigConstants.PREVIOUS_VACATIONS_DAYS_CELL;
+import static com.legadi.ui.vacations.common.ConfigConstants.START_DATE_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_TAKEN_DAYS_COLUMN;
 import static com.legadi.ui.vacations.common.Utils.isNumber;
 
 import java.io.FileInputStream;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -80,13 +83,19 @@ public class EmployeeService {
     }
 
     private EmployeeBalance getEmployeeBalance(EmployeeYear employeeYear, Workbook workbook) {
+        Sheet sheet = workbook.getSheet(employeeYear.getName());
+        CellRef companyCell = configService.getCell(COMPANY_NAME_CELL);
+        CellRef startDateCell = configService.getCell(START_DATE_CELL);
+        CellRef previousCell = configService.getCell(PREVIOUS_VACATIONS_DAYS_CELL);
+        CellValue cellValue = new CellValue(workbook);
+
         EmployeeBalance employeeBalance = new EmployeeBalance();
-        employeeBalance.setCompanyName("Company");
+        employeeBalance.setCompanyName(cellValue.asString(sheet, companyCell));
         employeeBalance.setName(employeeYear.getName());
         employeeBalance.setBalanceDays(5);
-        employeeBalance.setPreviousVacationDays(6);
+        employeeBalance.setPreviousVacationDays(cellValue.asInt(sheet, previousCell));
         employeeBalance.setRatioDays(7);
-        employeeBalance.setStartDate(LocalDate.now());
+        employeeBalance.setStartDate(cellValue.asLocalDate(sheet, startDateCell));
         employeeBalance.setYearRecords(employeeYear.getYearRecords());
         return employeeBalance;
     }
@@ -128,6 +137,7 @@ public class EmployeeService {
             .filter(row -> row.getRowNum() >= employeeFirstCell.getRow())
             .filter(row -> hasTakenDays(cellValue, totalTakenCol, row))
             .map(row -> toTakenByEmployee(cellValue, employeeFirstCell, totalTakenCol, year, row))
+            .filter(Objects::nonNull)
             .collect(Collectors.toMap(Employee::getName, e -> e, mergeEmployeeYear()));
     }
 
@@ -138,13 +148,21 @@ public class EmployeeService {
     private EmployeeYear toTakenByEmployee(CellValue cellValue, CellRef employeeFirstCell,
             CellRef totalTakenCol, int year, Row row) {
         String name = cellValue.asString(row.getCell(employeeFirstCell.getCol()));
+
+        if(name == null) {
+            return null;
+        }
+
         int totalTaken = cellValue.asInt(row.getCell(totalTakenCol.getCol()));
+
         EmployeeYear employee = new EmployeeYear();
-        employee.setName(name);
+        employee.setName(name.trim());
         employee.setYearRecords(new HashMap<>());
+
         YearRecord yearRecord = new YearRecord();
         yearRecord.setYear(year);
         yearRecord.setTakenByYear(totalTaken);
+
         employee.getYearRecords().put(year, yearRecord);
         return employee;
     }

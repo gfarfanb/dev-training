@@ -111,7 +111,7 @@ public class ConfigService {
 
     public void override(String property, Object value) {
         configProperties.put(property, value);
-        writeJsonFile(configLocation, value);
+        writeJsonFile(configLocation, configProperties);
     }
 
     public String get(String property) {

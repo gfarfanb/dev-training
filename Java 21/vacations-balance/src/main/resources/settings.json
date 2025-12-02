@@ -1,9 +1,9 @@
 {
-    "fileToAnalyzeLocation": "files\\vacations-registry.xlsx",
+    "fileToAnalyzeLocation": "",
     "employeeNameFirstCell": "A2",
     "totalTakenDaysColumn": "B",
     "startDateCell": "B3",
-    "startDateFormat": "yyyy/MM/dd",
+    "startDateFormat": "dd/MM/yyyy",
     "balanceDaysCell": "B5",
     "previousVacationsDaysCell": "B6",
     "radioDaysCell": "D5",

@@ -42,6 +42,7 @@ public class JavaFXApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         if(this.context != null) {
+            this.context.getBeanFactory().registerSingleton("primaryStage", primaryStage);
             this.context.publishEvent(new StageReadyEvent(primaryStage));
         } else {
             throw new IllegalStateException("[start] Spring context not initialized yet");
