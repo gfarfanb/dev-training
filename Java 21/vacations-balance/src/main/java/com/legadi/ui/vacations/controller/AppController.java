@@ -90,7 +90,6 @@ public class AppController {
     private TextField ratioField;
     @FXML
     private TextField balanceField;
-
     @FXML
     private TableView<YearRecord> yearTable;
     @FXML
@@ -99,6 +98,10 @@ public class AppController {
     private TableColumn<YearRecord, Integer> allowedColumn;
     @FXML
     private TableColumn<YearRecord, Integer> takenColumn;
+    @FXML
+    private Button calculateButton;
+    @FXML
+    private Button saveButton;
 
     @FXML
     private TextField configEmployeeField;
@@ -131,15 +134,17 @@ public class AppController {
     @FXML
     private TextField configHalfYearField;
     @FXML
-    private Button resetButton;
+    private Button configResetButton;
     @FXML
-    private Button saveButton;
+    private Button configSaveButton;
 
     private final ApplicationContext context;
     private final ConfigService configService;
     private final AlertService alertService;
     private final EmployeeService employeeService;
     private final ErrorMessage errorMessage;
+
+    private EmployeeBalance currentEmployeeBalance;
 
     public AppController(
             ApplicationContext context,
@@ -180,6 +185,9 @@ public class AppController {
         allowedColumn.setCellValueFactory(new PropertyValueFactory<>("allowedByYear"));
         takenColumn.setCellValueFactory(new PropertyValueFactory<>("takenByYear"));
 
+        calculateButton.setOnAction(event -> calculateBalance());
+        saveButton.setOnAction(event -> saveEmployee());
+
         fileMenu.setOnAction(event -> {
             mainStack.getChildren().forEach(n -> n.setVisible(false));
             balancePane.setVisible(true);
@@ -204,8 +212,8 @@ public class AppController {
             configRowDaysField.setDisable(!configHorizontalCheck.isSelected());
         });
 
-        resetButton.setOnAction(event -> resetConfig());
-        saveButton.setOnAction(event -> saveConfig());
+        configResetButton.setOnAction(event -> resetConfig());
+        configSaveButton.setOnAction(event -> saveConfig());
 
         refreshEmployeeList();
         refreshConfig();
@@ -230,6 +238,66 @@ public class AppController {
 
         employeeList.setItems(FXCollections.observableList(employeeService.getEmployeesWithTakenDays()));
         fileLabel.setText(balanceFile);
+    }
+
+    private void resetEmployeeBalance() {
+        companyField.setText(null);
+        nameField.setText(null);
+        startField.setText(null);
+        previousField.setText(null);
+        ratioField.setText(null);
+        balanceField.setText(null);
+        yearTable.setItems(FXCollections.emptyObservableList());
+        calculateButton.setDisable(true);
+        saveButton.setDisable(true);
+        currentEmployeeBalance = null;
+    }
+
+    private void refreshEmployeeBalance() {
+        String datePatterm = configService.get(START_DATE_FORMAT);
+
+        companyField.setText(currentEmployeeBalance.getCompanyName());
+        nameField.setText(currentEmployeeBalance.getName());
+        startField.setText(Optional.ofNullable(currentEmployeeBalance.getStartDate())
+            .map(d -> d.format(DateTimeFormatter.ofPattern(datePatterm)))
+            .orElse(null));
+        previousField.setText(Integer.toString(currentEmployeeBalance.getPreviousVacationDays()));
+        ratioField.setText(Integer.toString(currentEmployeeBalance.getRatioDays()));
+        balanceField.setText(Integer.toString(currentEmployeeBalance.getBalanceDays()));
+
+        List<YearRecord> yearRecords = currentEmployeeBalance.getYearRecords().values()
+                .stream()
+                .sorted(Comparator.comparing(YearRecord::getYear))
+                .toList();
+        yearTable.setItems(FXCollections.observableList(yearRecords));
+    }
+
+    private void loadEmployeeBalance(EmployeeYear employeeYear) {
+        currentEmployeeBalance = employeeService.getEmployeeBalance(employeeYear);
+
+        calculateButton.setDisable(currentEmployeeBalance == null);
+        saveButton.setDisable(currentEmployeeBalance == null);
+
+        if(currentEmployeeBalance == null) {
+            alertService.warn(null,
+                String.format(errorMessage.getBalanceNotFound(), employeeYear.getName()));
+            return;
+        }
+
+        refreshEmployeeBalance();
+    }
+
+    private void calculateBalance() {
+        if(currentEmployeeBalance != null) {
+            employeeService.calculateBalance(currentEmployeeBalance);
+            refreshEmployeeBalance();
+        }
+    }
+
+    private void saveEmployee() {
+        if(currentEmployeeBalance != null) {
+            employeeService.saveEmployee(currentEmployeeBalance);
+        }
     }
 
     private void refreshConfig() {
@@ -275,42 +343,5 @@ public class AppController {
         overrides.put(TOTAL_DAYS_YEAR, configTotalYearField.getText());
         overrides.put(TOTAL_DAYS_HALF_YEAR, configHalfYearField.getText());
         configService.override(overrides);
-    }
-
-    private void resetEmployeeBalance() {
-        companyField.setText(null);
-        nameField.setText(null);
-        startField.setText(null);
-        previousField.setText(null);
-        ratioField.setText(null);
-        balanceField.setText(null);
-        yearTable.setItems(FXCollections.emptyObservableList());
-    }
-
-    private void loadEmployeeBalance(EmployeeYear employeeYear) {
-        EmployeeBalance employeeBalance = employeeService.getEmployeeBalance(employeeYear);
-
-        if(employeeBalance == null) {
-            alertService.warn(null,
-                String.format(errorMessage.getBalanceNotFound(), employeeYear.getName()));
-            return;
-        }
-
-        String datePatterm = configService.get(START_DATE_FORMAT);
-
-        companyField.setText(employeeBalance.getCompanyName());
-        nameField.setText(employeeBalance.getName());
-        startField.setText(Optional.ofNullable(employeeBalance.getStartDate())
-            .map(d -> d.format(DateTimeFormatter.ofPattern(datePatterm)))
-            .orElse(null));
-        previousField.setText(Integer.toString(employeeBalance.getPreviousVacationDays()));
-        ratioField.setText(Integer.toString(employeeBalance.getRatioDays()));
-        balanceField.setText(Integer.toString(employeeBalance.getBalanceDays()));
-
-        List<YearRecord> yearRecords = employeeBalance.getYearRecords().values()
-                .stream()
-                .sorted(Comparator.comparing(YearRecord::getYear))
-                .toList();
-        yearTable.setItems(FXCollections.observableList(yearRecords));
     }
 }

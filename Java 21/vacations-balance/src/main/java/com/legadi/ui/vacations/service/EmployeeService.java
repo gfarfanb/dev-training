@@ -60,10 +60,6 @@ public class EmployeeService {
         this.errorMessage = errorMessage;
     }
 
-    public EmployeeBalance getEmployeeBalance(EmployeeYear employeeYear) {
-        return readFile(workbook -> getEmployeeBalance(employeeYear, workbook), null);
-    }
-
     public List<EmployeeYear> getEmployeesWithTakenDays() {
         return readFile(workbook -> {
             Map<String, EmployeeYear> employees = getEmployeesWithTakenDays(workbook);
@@ -73,6 +69,20 @@ public class EmployeeService {
                 .sorted(Comparator.comparing(EmployeeYear::getName))
                 .toList();
         }, Lists.newArrayList());
+    }
+
+    public EmployeeBalance getEmployeeBalance(EmployeeYear employeeYear) {
+        return readFile(workbook -> getEmployeeBalance(employeeYear, workbook), null);
+    }
+
+    public void calculateBalance(EmployeeBalance employeeBalance) {
+
+    }
+
+    public void saveEmployee(EmployeeBalance employeeBalance) {
+        CellRef previousCell = configService.getCell(PREVIOUS_VACATIONS_DAYS_CELL);
+        CellRef ratioCell = configService.getCell(RATIO_DAYS_CELL);
+        CellRef balanceCell = configService.getCell(BALANCE_DAYS_CELL);
     }
 
     private <T> T readFile(FileProcessor<T> processor, T defaultValue) {
@@ -109,6 +119,8 @@ public class EmployeeService {
         Map<Integer, YearRecord> yearRecords = getAllowedDays(cellValue, sheet);
         employeeYear.getYearRecords().forEach((k, v) -> yearRecords.merge(k, v, mergeYearRecord()));
         employeeBalance.setYearRecords(yearRecords);
+
+        calculateBalance(employeeBalance);
 
         return employeeBalance;
     }
