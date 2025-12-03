@@ -1,5 +1,7 @@
 package com.legadi.ui.vacations.service;
 
+import static com.legadi.ui.vacations.common.ConfigConstants.FILE_TO_ANALYZE_LOCATION;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.legadi.ui.vacations.common.CellRef;
 import com.legadi.ui.vacations.common.ErrorMessage;
+import com.legadi.ui.vacations.common.functions.ParseFunction;
+import com.legadi.ui.vacations.common.functions.ToBoolean;
+import com.legadi.ui.vacations.common.functions.ToNumber;
+import com.legadi.ui.vacations.common.functions.ToString;
 
 @Service
 public class ConfigService {
@@ -69,7 +75,7 @@ public class ConfigService {
                 return OBJECT_MAPPER.readValue(jsonInputStream, new TypeReference<>() {});
             }
         } catch(Exception ex) {
-            String message = String.format("%s: %s", errorMessage.getLoadJsonInternal(), location);
+            String message = String.format(errorMessage.getLoadJsonInternal(), location);
             logger.error(message, ex);
             return alertService.error(null, message);
         }
@@ -80,7 +86,7 @@ public class ConfigService {
             logger.info("Loading JSON file: {}", location);
             return OBJECT_MAPPER.readValue(reader, new TypeReference<>() {});
         } catch(Exception ex) {
-            String message = String.format("%s: %s", errorMessage.getLoadJsonFile(), location);
+            String message = String.format(errorMessage.getLoadJsonFile(), location);
             logger.error(message, ex);
             return alertService.error(null, message);
         }
@@ -91,7 +97,7 @@ public class ConfigService {
             OBJECT_MAPPER.writeValue(writer, content);
             logger.info("JSON file saved: {}", location);
         } catch(IOException ex) {
-            String message = String.format("%s: %s", errorMessage.getWriteJsonFile(), location);
+            String message = String.format(errorMessage.getWriteJsonFile(), location);
             logger.error(message, ex);
             alertService.error(null, message);
         }
@@ -103,83 +109,106 @@ public class ConfigService {
             Files.createDirectories(filePath.getParent());
             return filePath;
         } catch(IOException ex) {
-            String message = String.format("%s: %s", errorMessage.getCreateDirs(), location);
+            String message = String.format(errorMessage.getCreateDirs(), location);
             logger.error(message, ex);
             return alertService.error(null, message);
         }
     }
 
+    public void resetToDefaultConfig() {
+        String balanceFile = get(FILE_TO_ANALYZE_LOCATION);
+        try {
+            Files.deleteIfExists(Paths.get(configLocation));
+
+            Map<String, Object> properties = new HashMap<>(defaultProperties);
+            properties.put(FILE_TO_ANALYZE_LOCATION, balanceFile);
+
+            configProperties.clear();
+            configProperties.putAll(properties);
+            writeJsonFile(configLocation, configProperties);
+        } catch(IOException ex) {
+            logger.error("Unable to delete previous config - {}", ex.getMessage(), ex);
+        }
+    }
+
     public void override(String property, Object value) {
-        override(property, value, configProperties.get(property));
+        convertAndOverride(property, value);
         writeJsonFile(configLocation, configProperties);
     }
 
     public void override(Map<String, Object> values) {
-        values.forEach((k, v) -> override(k, v, configProperties.get(k)));
+        values.forEach((k, v) -> convertAndOverride(k, v));
         writeJsonFile(configLocation, configProperties);
     }
 
-    public void override(String property, Object value, Object previous) {
-        if(previous == null || value == null) {
+    public void convertAndOverride(String property, Object value) {
+        if(value == null) {
             configProperties.put(property, value);
             return;
         }
-        if(previous.getClass() == value.getClass()) {
-            configProperties.put(property, value);
+
+        Class<?> expectedType = expectedType(property);
+
+        if(Integer.class == expectedType) {
+            configProperties.put(property,
+                Optional.ofNullable(new ToNumber().apply(value))
+                    .map(Number::intValue)
+                    .orElse(null)
+            );
             return;
         }
-        if(previous instanceof Boolean) {
-            configProperties.put(property, Boolean.parseBoolean(value.toString()));
+
+        if(Boolean.class == expectedType) {
+            configProperties.put(property, new ToBoolean().apply(value));
             return;
         }
-        try {
-            if(previous instanceof Integer) {
-                configProperties.put(property, Integer.parseInt(value.toString()));
-                return;
-            }
-            if(previous instanceof Double) {
-                configProperties.put(property, Double.parseDouble(value.toString()));
-                return;
-            }
-        } catch(Exception ex) {
-            String message = String.format("%s [%s]: %s", errorMessage.getInvalidPropertyData(), property, value);
-            alertService.warn(null, message);
-            return;
-        }
-        if(previous instanceof String) {
-            configProperties.put(property, value.toString());
-        }
+
+        configProperties.put(property, new ToString().apply(value));
     }
 
     public String get(String property) {
-        return getValue(property, v -> v instanceof String);
+        return getValue(property, new ToString());
     }
 
     public int getInt(String property) {
-        return getValue(property, v -> v instanceof Integer);
+        return getValue(property, new ToNumber()).intValue();
     }
 
     public boolean getBoolean(String property) {
-        return getValue(property, v -> v instanceof Boolean);
+        return getValue(property, new ToBoolean());
     }
 
     public CellRef getCell(String property) {
         return new CellRef(get(property));
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T getValue(String propertyName, Predicate<Object> typeValidation) {
+    private <T> T getValue(String propertyName, ParseFunction<T> transformer) {
         Object value = configProperties.getOrDefault(propertyName, defaultProperties.get(propertyName));
         if(value == null) {
-            String message = String.format("%s: %s", errorMessage.getPropertyNotFound(), propertyName);
-            return alertService.error(null, message);
+            return alertService.error(null,
+                String.format(errorMessage.getPropertyNotFound(), propertyName));
         }
-        if(typeValidation.test(value)) {
-            return (T) value;
-        } else {
-            String message = String.format("%s: [%s] %s", errorMessage.getInvalidDataType(),
-                (value != null ? value.getClass() : "null"), value);
-            return alertService.error(null, message);
+        try {
+            T typedValue = transformer.apply(value);
+            if(typedValue == null) {
+                return alertService.error(null,
+                    String.format(errorMessage.getInvalidDataType(), transformer.type(), value));
+            }
+            return typedValue;
+        } catch(Exception ex) {
+            return alertService.error(null,
+                String.format(errorMessage.getInvalidDataType(), transformer.type(), value));
+        }
+    }
+
+    private Class<?> expectedType(String property) {
+        String definedType = configProperties
+            .getOrDefault(property + ".class", String.class.getName())
+            .toString();
+        try {
+            return Class.forName(definedType);
+        } catch(ClassNotFoundException ex) {
+            return String.class;
         }
     }
 }

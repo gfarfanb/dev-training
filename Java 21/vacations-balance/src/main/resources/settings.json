@@ -6,13 +6,18 @@
     "startDateFormat": "dd/MM/yyyy",
     "balanceDaysCell": "B5",
     "previousVacationsDaysCell": "B6",
-    "radioDaysCell": "D5",
+    "ratioDaysCell": "D5",
     "allowedDaysYearFirstCell": "A9",
     "allowedDaysHorizontal": false,
+    "allowedDaysHorizontal.class": "java.lang.Boolean",
     "allowedDaysValueColumn": "B",
     "allowedDaysValueRow": 10,
+    "allowedDaysValueRow.class": "java.lang.Integer",
     "companyNameCell": "B2",
     "baseYear": 2020,
+    "baseYear.class": "java.lang.Integer",
     "totalDaysYear": 365,
-    "totalDaysHalfYear": 183
+    "totalDaysYear.class": "java.lang.Integer",
+    "totalDaysHalfYear": 183,
+    "totalDaysHalfYear.class": "java.lang.Integer"
 }

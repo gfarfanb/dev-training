@@ -1,10 +1,12 @@
 package com.legadi.ui.vacations.service;
 
+import static com.legadi.ui.vacations.common.ConfigConstants.BALANCE_DAYS_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.BASE_YEAR;
 import static com.legadi.ui.vacations.common.ConfigConstants.COMPANY_NAME_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.EMPLOYEE_NAME_FIRST_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.FILE_TO_ANALYZE_LOCATION;
 import static com.legadi.ui.vacations.common.ConfigConstants.PREVIOUS_VACATIONS_DAYS_CELL;
+import static com.legadi.ui.vacations.common.ConfigConstants.RATIO_DAYS_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.START_DATE_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_TAKEN_DAYS_COLUMN;
 import static com.legadi.ui.vacations.common.Utils.isNumber;
@@ -75,7 +77,7 @@ public class EmployeeService {
                 Workbook workbook = WorkbookFactory.create(file)) {
             return processor.apply(workbook);
         } catch (Exception ex) {
-            String message = String.format("%s: %s", errorMessage.getReadBalanceFile(), balanceFile);
+            String message = String.format(errorMessage.getReadBalanceFile(), balanceFile);
             logger.error(message, ex);
             alertService.warn(null, message);
             return defaultValue;
@@ -87,14 +89,16 @@ public class EmployeeService {
         CellRef companyCell = configService.getCell(COMPANY_NAME_CELL);
         CellRef startDateCell = configService.getCell(START_DATE_CELL);
         CellRef previousCell = configService.getCell(PREVIOUS_VACATIONS_DAYS_CELL);
+        CellRef ratioCell = configService.getCell(RATIO_DAYS_CELL);
+        CellRef balanceCell = configService.getCell(BALANCE_DAYS_CELL);
         CellValue cellValue = new CellValue(workbook);
 
         EmployeeBalance employeeBalance = new EmployeeBalance();
         employeeBalance.setCompanyName(cellValue.asString(sheet, companyCell));
         employeeBalance.setName(employeeYear.getName());
-        employeeBalance.setBalanceDays(5);
+        employeeBalance.setBalanceDays(cellValue.asInt(sheet, balanceCell));
         employeeBalance.setPreviousVacationDays(cellValue.asInt(sheet, previousCell));
-        employeeBalance.setRatioDays(7);
+        employeeBalance.setRatioDays(cellValue.asInt(sheet, ratioCell));
         employeeBalance.setStartDate(cellValue.asLocalDate(sheet, startDateCell));
         employeeBalance.setYearRecords(employeeYear.getYearRecords());
         return employeeBalance;

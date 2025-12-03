@@ -11,7 +11,7 @@ public final class ConfigConstants {
     public static final String START_DATE_FORMAT = "startDateFormat";
     public static final String BALANCE_DAYS_CELL = "balanceDaysCell";
     public static final String PREVIOUS_VACATIONS_DAYS_CELL = "previousVacationsDaysCell";
-    public static final String RADIO_DAYS_CELL = "radioDaysCell";
+    public static final String RATIO_DAYS_CELL = "ratioDaysCell";
     public static final String ALLOWED_DAYS_YEAR_FIRST_CELL = "allowedDaysYearFirstCell";
     public static final String ALLOWED_DAYS_HORIZONTAL = "allowedDaysHorizontal";
     public static final String ALLOWED_DAYS_VALUE_COLUMN = "allowedDaysValueColumn";

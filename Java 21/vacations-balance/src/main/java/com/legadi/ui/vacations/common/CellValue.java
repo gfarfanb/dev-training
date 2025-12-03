@@ -1,7 +1,5 @@
 package com.legadi.ui.vacations.common;
 
-import static com.legadi.ui.vacations.common.Utils.isNumber;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -15,6 +13,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.legadi.ui.vacations.common.functions.ToNumber;
 
 public class CellValue {
 
@@ -96,24 +96,6 @@ public class CellValue {
                 return transformer.apply(cell.getStringCellValue());
             default:
                 return null;
-        }
-    }
-
-    public static class ToNumber implements Function<Object, Number> {
-
-        @Override
-        public Number apply(Object value) {
-            if(value instanceof Boolean) {
-                return ((boolean) value) ? 1 : 0;
-            }
-            if(value instanceof Double) {
-                return (double) value;
-            }
-            if(value instanceof String) {
-                String numberRaw = (String) value;
-                return isNumber(numberRaw) ? Double.valueOf(numberRaw) : null;
-            }
-            return null;
         }
     }
 }

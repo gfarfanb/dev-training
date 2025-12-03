@@ -7,12 +7,15 @@ import static com.legadi.ui.vacations.common.ConfigConstants.ALLOWED_DAYS_YEAR_F
 import static com.legadi.ui.vacations.common.ConfigConstants.BALANCE_DAYS_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.BASE_YEAR;
 import static com.legadi.ui.vacations.common.ConfigConstants.COMPANY_NAME_CELL;
+import static com.legadi.ui.vacations.common.ConfigConstants.EMPLOYEE_NAME_FIRST_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.FILE_TO_ANALYZE_LOCATION;
 import static com.legadi.ui.vacations.common.ConfigConstants.PREVIOUS_VACATIONS_DAYS_CELL;
+import static com.legadi.ui.vacations.common.ConfigConstants.RATIO_DAYS_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.START_DATE_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.START_DATE_FORMAT;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_DAYS_HALF_YEAR;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_DAYS_YEAR;
+import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_TAKEN_DAYS_COLUMN;
 
 import java.io.File;
 import java.time.format.DateTimeFormatter;
@@ -98,6 +101,10 @@ public class AppController {
     private TableColumn<YearRecord, Integer> takenColumn;
 
     @FXML
+    private TextField configEmployeeField;
+    @FXML
+    private TextField configTakenField;
+    @FXML
     private TextField configCompanyField;
     @FXML
     private TextField configStartField;
@@ -107,6 +114,8 @@ public class AppController {
     private TextField configBalanceField;
     @FXML
     private TextField configPreviousField;
+    @FXML
+    private TextField configRatioField;
     @FXML
     private TextField configYearField;
     @FXML
@@ -121,6 +130,8 @@ public class AppController {
     private TextField configTotalYearField;
     @FXML
     private TextField configHalfYearField;
+    @FXML
+    private Button resetButton;
     @FXML
     private Button saveButton;
 
@@ -193,9 +204,8 @@ public class AppController {
             configRowDaysField.setDisable(!configHorizontalCheck.isSelected());
         });
 
-        saveButton.setOnAction(event -> {
-            saveConfig();
-        });
+        resetButton.setOnAction(event -> resetConfig());
+        saveButton.setOnAction(event -> saveConfig());
 
         refreshEmployeeList();
         refreshConfig();
@@ -223,11 +233,14 @@ public class AppController {
     }
 
     private void refreshConfig() {
+        configEmployeeField.setText(configService.get(EMPLOYEE_NAME_FIRST_CELL));
+        configTakenField.setText(configService.get(TOTAL_TAKEN_DAYS_COLUMN));
         configCompanyField.setText(configService.get(COMPANY_NAME_CELL));
         configStartField.setText(configService.get(START_DATE_CELL));
         configFormatField.setText(configService.get(START_DATE_FORMAT));
         configBalanceField.setText(configService.get(BALANCE_DAYS_CELL));
         configPreviousField.setText(configService.get(PREVIOUS_VACATIONS_DAYS_CELL));
+        configRatioField.setText(configService.get(RATIO_DAYS_CELL));
         configYearField.setText(configService.get(ALLOWED_DAYS_YEAR_FIRST_CELL));
         configHorizontalCheck.setSelected(configService.getBoolean(ALLOWED_DAYS_HORIZONTAL));
         configColDaysField.setDisable(configService.getBoolean(ALLOWED_DAYS_HORIZONTAL));
@@ -239,13 +252,21 @@ public class AppController {
         configHalfYearField.setText(configService.get(TOTAL_DAYS_HALF_YEAR));
     }
 
+    private void resetConfig() {
+        configService.resetToDefaultConfig();
+        refreshConfig();
+    }
+
     private void saveConfig() {
         Map<String, Object> overrides = new HashMap<>();
+        overrides.put(EMPLOYEE_NAME_FIRST_CELL, configEmployeeField.getText());
+        overrides.put(TOTAL_TAKEN_DAYS_COLUMN, configTakenField.getText());
         overrides.put(COMPANY_NAME_CELL, configCompanyField.getText());
         overrides.put(START_DATE_CELL, configStartField.getText());
         overrides.put(START_DATE_FORMAT, configFormatField.getText());
         overrides.put(BALANCE_DAYS_CELL, configBalanceField.getText());
         overrides.put(PREVIOUS_VACATIONS_DAYS_CELL, configPreviousField.getText());
+        overrides.put(RATIO_DAYS_CELL, configRatioField.getText());
         overrides.put(ALLOWED_DAYS_YEAR_FIRST_CELL, configYearField.getText());
         overrides.put(ALLOWED_DAYS_HORIZONTAL, configHorizontalCheck.isSelected());
         overrides.put(ALLOWED_DAYS_VALUE_COLUMN, configColDaysField.getText());
@@ -270,8 +291,8 @@ public class AppController {
         EmployeeBalance employeeBalance = employeeService.getEmployeeBalance(employeeYear);
 
         if(employeeBalance == null) {
-            String message = String.format("%s: %s", errorMessage.getBalanceNotFound(), employeeYear.getName());
-            alertService.warn(null, message);
+            alertService.warn(null,
+                String.format(errorMessage.getBalanceNotFound(), employeeYear.getName()));
             return;
         }
 

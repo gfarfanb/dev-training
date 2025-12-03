@@ -10,14 +10,14 @@ app:
 
 error:
   messages:
-    load-json-internal: No se pudo cargar archivo interno
-    load-json-file: No se pudo cargar archivo
-    write-json-file: No se pudo escribir archivo
-    create-dirs: No se pudieron crear directorios
-    property-not-found: Propiedad no encontrada
-    invalid-data-type: Tipo de valor inválido
-    read-balance-file: No se pudo leer archivo de balance de vacaciones
-    balance-not-found: Balance no encontrado para empleado
+    load-json-internal: 'No se pudo cargar archivo interno: %s'
+    load-json-file: 'No se pudo cargar archivo: %s'
+    write-json-file: 'No se pudo escribir archivo: %s'
+    create-dirs: 'No se pudieron crear directorios: %s'
+    property-not-found: 'Propiedad no encontrada: %s'
+    invalid-data-type: 'Tipo de valor inválido, esperado[%s]: %s'
+    read-balance-file: 'No se pudo leer archivo de balance de vacaciones: %s'
+    balance-not-found: 'Balance no encontrado para empleado: %s'
     invalid-property-data: Valor inválido para propiedad
 
 logging:
