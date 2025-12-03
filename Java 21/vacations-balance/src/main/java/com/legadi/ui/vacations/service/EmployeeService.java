@@ -1,5 +1,9 @@
 package com.legadi.ui.vacations.service;
 
+import static com.legadi.ui.vacations.common.ConfigConstants.ALLOWED_DAYS_HORIZONTAL;
+import static com.legadi.ui.vacations.common.ConfigConstants.ALLOWED_DAYS_VALUE_COLUMN;
+import static com.legadi.ui.vacations.common.ConfigConstants.ALLOWED_DAYS_VALUE_ROW;
+import static com.legadi.ui.vacations.common.ConfigConstants.ALLOWED_DAYS_YEAR_FIRST_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.BALANCE_DAYS_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.BASE_YEAR;
 import static com.legadi.ui.vacations.common.ConfigConstants.COMPANY_NAME_CELL;
@@ -22,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.compress.utils.Lists;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -100,8 +105,44 @@ public class EmployeeService {
         employeeBalance.setPreviousVacationDays(cellValue.asInt(sheet, previousCell));
         employeeBalance.setRatioDays(cellValue.asInt(sheet, ratioCell));
         employeeBalance.setStartDate(cellValue.asLocalDate(sheet, startDateCell));
-        employeeBalance.setYearRecords(employeeYear.getYearRecords());
+
+        Map<Integer, YearRecord> yearRecords = getAllowedDays(cellValue, sheet);
+        employeeYear.getYearRecords().forEach((k, v) -> yearRecords.merge(k, v, mergeYearRecord()));
+        employeeBalance.setYearRecords(yearRecords);
+
         return employeeBalance;
+    }
+
+    private Map<Integer, YearRecord> getAllowedDays(CellValue cellValue, Sheet sheet) {
+        boolean isHorizontal = configService.getBoolean(ALLOWED_DAYS_HORIZONTAL);
+        CellRef firstCell = configService.getCell(ALLOWED_DAYS_YEAR_FIRST_CELL);
+        CellRef colCell = configService.getCell(ALLOWED_DAYS_VALUE_COLUMN);
+        CellRef rowCell = configService.getCell(ALLOWED_DAYS_VALUE_ROW);
+
+        if(isHorizontal) {
+            Row yearRow = sheet.getRow(firstCell.getRow());
+            Row allowedRow = sheet.getRow(rowCell.getRow());
+
+            return StreamSupport.stream(yearRow.spliterator(), false)
+                .filter(cell -> cell.getColumnIndex() >= firstCell.getCol())
+                .filter(cell -> isValidYear(cellValue, cell, yearRow))
+                .filter(cell -> isNumeric(cellValue, cell, allowedRow))
+                .map(cell -> toYearRecord(cellValue, cell, yearRow, allowedRow))
+                .collect(Collectors.toMap(
+                    YearRecord::getYear,
+                    y -> y,
+                    (y1, y2) -> y2));
+        } else {
+            return StreamSupport.stream(sheet.spliterator(), false)
+                .filter(row -> row.getRowNum() >= firstCell.getRow())
+                .filter(row -> isValidYear(cellValue, firstCell, row))
+                .filter(row -> isNumeric(cellValue, colCell, row))
+                .map(row -> toYearRecord(cellValue, firstCell, colCell, row))
+                .collect(Collectors.toMap(
+                    YearRecord::getYear,
+                    y -> y,
+                    (y1, y2) -> y2));
+        }
     }
 
     private Map<String, EmployeeYear> getEmployeesWithTakenDays(Workbook workbook) {
@@ -139,14 +180,42 @@ public class EmployeeService {
         int year = Integer.parseInt(sheet.getSheetName());
         return StreamSupport.stream(sheet.spliterator(), false)
             .filter(row -> row.getRowNum() >= employeeFirstCell.getRow())
-            .filter(row -> hasTakenDays(cellValue, totalTakenCol, row))
+            .filter(row -> isNumeric(cellValue, totalTakenCol, row))
             .map(row -> toTakenByEmployee(cellValue, employeeFirstCell, totalTakenCol, year, row))
             .filter(Objects::nonNull)
             .collect(Collectors.toMap(Employee::getName, e -> e, mergeEmployeeYear()));
     }
 
-    private boolean hasTakenDays(CellValue cellValue, CellRef totalTakenCol, Row row) {
-        return isNumber(cellValue.asString(row.getCell(totalTakenCol.getCol())));
+    private boolean isNumeric(CellValue cellValue, CellRef numberCell, Row row) {
+        return isNumber(cellValue.asString(row.getCell(numberCell.getCol())));
+    }
+
+    private boolean isNumeric(CellValue cellValue, Cell cell, Row row) {
+        return isNumber(cellValue.asString(row.getCell(cell.getColumnIndex())));
+    }
+
+    private boolean isValidYear(CellValue cellValue, CellRef yearCell, Row row) {
+        int baseYear = configService.getInt(BASE_YEAR);
+        return cellValue.asInt(row.getCell(yearCell.getCol())) >= baseYear;
+    }
+
+    private boolean isValidYear(CellValue cellValue, Cell cell, Row row) {
+        int baseYear = configService.getInt(BASE_YEAR);
+        return cellValue.asInt(row.getCell(cell.getColumnIndex())) >= baseYear;
+    }
+
+    private YearRecord toYearRecord(CellValue cellValue, CellRef yearCell, CellRef allowedCell, Row row) {
+        YearRecord yearRecord = new YearRecord();
+        yearRecord.setYear(cellValue.asInt(row.getCell(yearCell.getCol())));
+        yearRecord.setAllowedByYear(cellValue.asInt(row.getCell(allowedCell.getCol())));
+        return yearRecord;
+    }
+
+    private YearRecord toYearRecord(CellValue cellValue, Cell cell, Row yearRow, Row allowedRow) {
+        YearRecord yearRecord = new YearRecord();
+        yearRecord.setYear(cellValue.asInt(yearRow.getCell(cell.getColumnIndex())));
+        yearRecord.setAllowedByYear(cellValue.asInt(allowedRow.getCell(cell.getColumnIndex())));
+        return yearRecord;
     }
 
     private EmployeeYear toTakenByEmployee(CellValue cellValue, CellRef employeeFirstCell,
@@ -184,6 +253,18 @@ public class EmployeeService {
             });
             e2.getYearRecords().keySet().removeAll(e1.getYearRecords().keySet());
             e1.getYearRecords().putAll(e2.getYearRecords());
+            return e1;
+        };
+    }
+
+    private BinaryOperator<YearRecord> mergeYearRecord() {
+        return (e1, e2) -> {
+            if(e1.getAllowedByYear() == 0) {
+                e1.setAllowedByYear(e2.getAllowedByYear());
+            }
+            if(e1.getTakenByYear() == 0) {
+                e1.setTakenByYear(e2.getTakenByYear());
+            };
             return e1;
         };
     }
