@@ -13,10 +13,11 @@ public final class ConfigConstants {
     public static final String PREVIOUS_VACATIONS_DAYS_CELL = "previousVacationsDaysCell";
     public static final String RADIO_DAYS_CELL = "radioDaysCell";
     public static final String ALLOWED_DAYS_YEAR_FIRST_CELL = "allowedDaysYearFirstCell";
+    public static final String ALLOWED_DAYS_HORIZONTAL = "allowedDaysHorizontal";
     public static final String ALLOWED_DAYS_VALUE_COLUMN = "allowedDaysValueColumn";
     public static final String ALLOWED_DAYS_VALUE_ROW = "allowedDaysValueRow";
     public static final String COMPANY_NAME_CELL = "companyNameCell";
     public static final String BASE_YEAR = "baseYear";
     public static final String TOTAL_DAYS_YEAR = "totalDaysYear";
-    public static final String TOTAL_DAYS_HALF_YEAR = "totalDyasHalfYear";
+    public static final String TOTAL_DAYS_HALF_YEAR = "totalDaysHalfYear";
 }

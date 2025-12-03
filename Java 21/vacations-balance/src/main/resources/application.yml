@@ -18,6 +18,7 @@ error:
     invalid-data-type: Tipo de valor inválido
     read-balance-file: No se pudo leer archivo de balance de vacaciones
     balance-not-found: Balance no encontrado para empleado
+    invalid-property-data: Valor inválido para propiedad
 
 logging:
   level:

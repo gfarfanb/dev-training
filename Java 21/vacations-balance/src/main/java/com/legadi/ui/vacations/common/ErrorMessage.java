@@ -19,4 +19,5 @@ public class ErrorMessage {
     private String invalidDataType;
     private String readBalanceFile;
     private String balanceNotFound;
+    private String invalidPropertyData;
 }

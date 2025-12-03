@@ -110,8 +110,45 @@ public class ConfigService {
     }
 
     public void override(String property, Object value) {
-        configProperties.put(property, value);
+        override(property, value, configProperties.get(property));
         writeJsonFile(configLocation, configProperties);
+    }
+
+    public void override(Map<String, Object> values) {
+        values.forEach((k, v) -> override(k, v, configProperties.get(k)));
+        writeJsonFile(configLocation, configProperties);
+    }
+
+    public void override(String property, Object value, Object previous) {
+        if(previous == null || value == null) {
+            configProperties.put(property, value);
+            return;
+        }
+        if(previous.getClass() == value.getClass()) {
+            configProperties.put(property, value);
+            return;
+        }
+        if(previous instanceof Boolean) {
+            configProperties.put(property, Boolean.parseBoolean(value.toString()));
+            return;
+        }
+        try {
+            if(previous instanceof Integer) {
+                configProperties.put(property, Integer.parseInt(value.toString()));
+                return;
+            }
+            if(previous instanceof Double) {
+                configProperties.put(property, Double.parseDouble(value.toString()));
+                return;
+            }
+        } catch(Exception ex) {
+            String message = String.format("%s [%s]: %s", errorMessage.getInvalidPropertyData(), property, value);
+            alertService.warn(null, message);
+            return;
+        }
+        if(previous instanceof String) {
+            configProperties.put(property, value.toString());
+        }
     }
 
     public String get(String property) {
@@ -120,6 +157,10 @@ public class ConfigService {
 
     public int getInt(String property) {
         return getValue(property, v -> v instanceof Integer);
+    }
+
+    public boolean getBoolean(String property) {
+        return getValue(property, v -> v instanceof Boolean);
     }
 
     public CellRef getCell(String property) {
