@@ -29,7 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.legadi.ui.vacations.common.ErrorMessage;
+import com.legadi.ui.vacations.common.AlertMessage;
+import com.legadi.ui.vacations.common.functions.ToNumber;
 import com.legadi.ui.vacations.model.EmployeeBalance;
 import com.legadi.ui.vacations.model.EmployeeYear;
 import com.legadi.ui.vacations.model.YearRecord;
@@ -142,7 +143,7 @@ public class AppController {
     private final ConfigService configService;
     private final AlertService alertService;
     private final EmployeeService employeeService;
-    private final ErrorMessage errorMessage;
+    private final AlertMessage alertMessage;
 
     private EmployeeBalance currentEmployeeBalance;
 
@@ -151,12 +152,12 @@ public class AppController {
             ConfigService configService,
             AlertService alertService,
             EmployeeService employeeService,
-            ErrorMessage errorMessage) {
+            AlertMessage alertMessage) {
         this.context = context;
         this.configService = configService;
         this.alertService = alertService;
         this.employeeService = employeeService;
-        this.errorMessage = errorMessage;
+        this.alertMessage = alertMessage;
     }
 
     @FXML
@@ -280,7 +281,7 @@ public class AppController {
 
         if(currentEmployeeBalance == null) {
             alertService.warn(null,
-                String.format(errorMessage.getBalanceNotFound(), employeeYear.getName()));
+                String.format(alertMessage.getBalanceNotFound(), employeeYear.getName()));
             return;
         }
 
@@ -296,6 +297,10 @@ public class AppController {
 
     private void saveEmployee() {
         if(currentEmployeeBalance != null) {
+            currentEmployeeBalance.setPreviousVacationDays(
+                new ToNumber().applyOpt(previousField.getText())
+                    .map(Number::intValue)
+                    .orElse(0));
             employeeService.saveEmployee(currentEmployeeBalance);
         }
     }

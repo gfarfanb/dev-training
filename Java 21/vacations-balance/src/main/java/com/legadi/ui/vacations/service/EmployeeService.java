@@ -16,6 +16,8 @@ import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_TAKEN_DAYS_CO
 import static com.legadi.ui.vacations.common.Utils.isNumber;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -31,13 +33,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.legadi.ui.vacations.common.CellRef;
 import com.legadi.ui.vacations.common.CellValue;
-import com.legadi.ui.vacations.common.ErrorMessage;
+import com.legadi.ui.vacations.common.AlertMessage;
 import com.legadi.ui.vacations.model.Employee;
 import com.legadi.ui.vacations.model.EmployeeBalance;
 import com.legadi.ui.vacations.model.EmployeeYear;
@@ -50,14 +53,14 @@ public class EmployeeService {
 
     private final ConfigService configService;
     private final AlertService alertService;
-    private final ErrorMessage errorMessage;
+    private final AlertMessage alertMessage;
 
     public EmployeeService(ConfigService configService,
             AlertService alertService,
-            ErrorMessage errorMessage) {
+            AlertMessage alertMessage) {
         this.configService = configService;
         this.alertService = alertService;
-        this.errorMessage = errorMessage;
+        this.alertMessage = alertMessage;
     }
 
     public List<EmployeeYear> getEmployeesWithTakenDays() {
@@ -83,6 +86,27 @@ public class EmployeeService {
         CellRef previousCell = configService.getCell(PREVIOUS_VACATIONS_DAYS_CELL);
         CellRef ratioCell = configService.getCell(RATIO_DAYS_CELL);
         CellRef balanceCell = configService.getCell(BALANCE_DAYS_CELL);
+
+        readFile(workbook -> {
+            Sheet sheet = workbook.getSheet(employeeBalance.getName());
+            Cell previous = sheet.getRow(previousCell.getRow()).getCell(previousCell.getCol(),
+                MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            Cell ratio = sheet.getRow(ratioCell.getRow()).getCell(ratioCell.getCol(),
+                MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            Cell balance = sheet.getRow(balanceCell.getRow()).getCell(balanceCell.getCol(),
+                MissingCellPolicy.CREATE_NULL_AS_BLANK);
+
+            previous.setCellValue(employeeBalance.getPreviousVacationDays());
+            ratio.setCellValue(employeeBalance.getRatioDays());
+            balance.setCellValue(employeeBalance.getBalanceDays());
+
+            if(writeFile(workbook)) {
+                alertService.info(null,
+                    String.format(alertMessage.getEmployeeSaved(), employeeBalance.getName()));
+            }
+
+            return null;
+        }, null);
     }
 
     private <T> T readFile(FileProcessor<T> processor, T defaultValue) {
@@ -92,10 +116,24 @@ public class EmployeeService {
                 Workbook workbook = WorkbookFactory.create(file)) {
             return processor.apply(workbook);
         } catch (Exception ex) {
-            String message = String.format(errorMessage.getReadBalanceFile(), balanceFile);
+            String message = String.format(alertMessage.getReadBalanceFile(), balanceFile);
             logger.error(message, ex);
             alertService.warn(null, message);
             return defaultValue;
+        }
+    }
+
+    private boolean writeFile(Workbook workbook) {
+        String balanceFile = configService.get(FILE_TO_ANALYZE_LOCATION);
+
+        try (FileOutputStream outputStream = new FileOutputStream(balanceFile)) {
+            workbook.write(outputStream);
+            return true;
+        } catch(IOException ex) {
+            String message = String.format(alertMessage.getWriteBalanceFile(), balanceFile);
+            logger.error(message, ex);
+            alertService.warn(null, message);
+            return false;
         }
     }
 

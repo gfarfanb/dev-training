@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.legadi.ui.vacations.common.CellRef;
-import com.legadi.ui.vacations.common.ErrorMessage;
+import com.legadi.ui.vacations.common.AlertMessage;
 import com.legadi.ui.vacations.common.functions.ParseFunction;
 import com.legadi.ui.vacations.common.functions.ToBoolean;
 import com.legadi.ui.vacations.common.functions.ToNumber;
@@ -42,17 +41,17 @@ public class ConfigService {
 
     private final String configLocation;
     private final AlertService alertService;
-    private final ErrorMessage errorMessage;
+    private final AlertMessage alertMessage;
 
     public ConfigService(
             @Value("${app.config.location}") String configLocation,
             AlertService alertService,
-            ErrorMessage errorMessage) {
+            AlertMessage alertMessage) {
         this.defaultProperties = loadJsonInternal(DEFAULT_SETTINGS);
         this.configProperties = loadInitialConfig(configLocation, this.defaultProperties);
         this.configLocation = configLocation;
         this.alertService = alertService;
-        this.errorMessage = errorMessage;
+        this.alertMessage = alertMessage;
     }
 
     private Map<String, Object> loadInitialConfig(String configLocation, Map<String, Object> defaultProperties) {
@@ -75,7 +74,7 @@ public class ConfigService {
                 return OBJECT_MAPPER.readValue(jsonInputStream, new TypeReference<>() {});
             }
         } catch(Exception ex) {
-            String message = String.format(errorMessage.getLoadJsonInternal(), location);
+            String message = String.format(alertMessage.getLoadJsonInternal(), location);
             logger.error(message, ex);
             return alertService.error(null, message);
         }
@@ -86,7 +85,7 @@ public class ConfigService {
             logger.info("Loading JSON file: {}", location);
             return OBJECT_MAPPER.readValue(reader, new TypeReference<>() {});
         } catch(Exception ex) {
-            String message = String.format(errorMessage.getLoadJsonFile(), location);
+            String message = String.format(alertMessage.getLoadJsonFile(), location);
             logger.error(message, ex);
             return alertService.error(null, message);
         }
@@ -97,7 +96,7 @@ public class ConfigService {
             OBJECT_MAPPER.writeValue(writer, content);
             logger.info("JSON file saved: {}", location);
         } catch(IOException ex) {
-            String message = String.format(errorMessage.getWriteJsonFile(), location);
+            String message = String.format(alertMessage.getWriteJsonFile(), location);
             logger.error(message, ex);
             alertService.error(null, message);
         }
@@ -109,7 +108,7 @@ public class ConfigService {
             Files.createDirectories(filePath.getParent());
             return filePath;
         } catch(IOException ex) {
-            String message = String.format(errorMessage.getCreateDirs(), location);
+            String message = String.format(alertMessage.getCreateDirs(), location);
             logger.error(message, ex);
             return alertService.error(null, message);
         }
@@ -151,7 +150,7 @@ public class ConfigService {
 
         if(Integer.class == expectedType) {
             configProperties.put(property,
-                Optional.ofNullable(new ToNumber().apply(value))
+                new ToNumber().applyOpt(value)
                     .map(Number::intValue)
                     .orElse(null)
             );
@@ -186,18 +185,18 @@ public class ConfigService {
         Object value = configProperties.getOrDefault(propertyName, defaultProperties.get(propertyName));
         if(value == null) {
             return alertService.error(null,
-                String.format(errorMessage.getPropertyNotFound(), propertyName));
+                String.format(alertMessage.getPropertyNotFound(), propertyName));
         }
         try {
             T typedValue = transformer.apply(value);
             if(typedValue == null) {
                 return alertService.error(null,
-                    String.format(errorMessage.getInvalidDataType(), transformer.type(), value));
+                    String.format(alertMessage.getInvalidDataType(), transformer.type(), value));
             }
             return typedValue;
         } catch(Exception ex) {
             return alertService.error(null,
-                String.format(errorMessage.getInvalidDataType(), transformer.type(), value));
+                String.format(alertMessage.getInvalidDataType(), transformer.type(), value));
         }
     }
 

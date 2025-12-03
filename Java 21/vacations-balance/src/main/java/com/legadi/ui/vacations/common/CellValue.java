@@ -3,7 +3,6 @@ package com.legadi.ui.vacations.common;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.function.Function;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -14,7 +13,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.legadi.ui.vacations.common.functions.ParseFunction;
 import com.legadi.ui.vacations.common.functions.ToNumber;
+import com.legadi.ui.vacations.common.functions.ToString;
 
 public class CellValue {
 
@@ -33,7 +34,7 @@ public class CellValue {
     }
 
     public String asString(Cell cell) {
-        return getValueOrDefault(cell, Object::toString, null);
+        return getValueOrDefault(cell, new ToString(), null);
     }
 
     public int asInt(Sheet sheet, CellRef cellRef) {
@@ -61,13 +62,13 @@ public class CellValue {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-    private <T> T getValueOrDefault(Cell cell, Function<Object, T> transformer, T defaultValue) {
+    private <T> T getValueOrDefault(Cell cell, ParseFunction<T> transformer, T defaultValue) {
         T value = getValue(cell, transformer);
         logger.trace("Reading cell: cell={} value={}", cell, value);
         return value != null ? value : defaultValue;
     }
 
-    private <T> T getValue(Cell cell, Function<Object, T> transformer) {
+    private <T> T getValue(Cell cell, ParseFunction<T> transformer) {
         if(cell == null) {
             return null;
         }
@@ -85,7 +86,7 @@ public class CellValue {
         }
     }
 
-    private <T> T evaluate(Cell cell, Function<Object, T> transformer) {
+    private <T> T evaluate(Cell cell, ParseFunction<T> transformer) {
         FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
         switch (evaluator.evaluateFormulaCell(cell)) {
             case BOOLEAN:

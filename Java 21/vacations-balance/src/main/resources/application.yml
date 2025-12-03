@@ -8,7 +8,7 @@ app:
   config:
     location: ${java.io.tmpdir}vacations-balance\config.json
 
-error:
+alert:
   messages:
     load-json-internal: 'No se pudo cargar archivo interno: %s'
     load-json-file: 'No se pudo cargar archivo: %s'
@@ -17,8 +17,9 @@ error:
     property-not-found: 'Propiedad no encontrada: %s'
     invalid-data-type: 'Tipo de valor inválido, esperado[%s]: %s'
     read-balance-file: 'No se pudo leer archivo de balance de vacaciones: %s'
+    write-balance-file: 'No se pudo guardar archivo de balance de vacaciones: %s'
     balance-not-found: 'Balance no encontrado para empleado: %s'
-    invalid-property-data: Valor inválido para propiedad
+    employee-saved: 'Balance de empleado "%s" guardado correctamente'
 
 logging:
   level:

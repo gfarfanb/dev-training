@@ -7,9 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Configuration
-@ConfigurationProperties(prefix = "error.messages")
+@ConfigurationProperties(prefix = "alert.messages")
 @Getter @Setter
-public class ErrorMessage {
+public class AlertMessage {
 
     private String loadJsonInternal;
     private String loadJsonFile;
@@ -18,6 +18,7 @@ public class ErrorMessage {
     private String propertyNotFound;
     private String invalidDataType;
     private String readBalanceFile;
+    private String writeBalanceFile;
     private String balanceNotFound;
-    private String invalidPropertyData;
+    private String employeeSaved;
 }

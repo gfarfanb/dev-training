@@ -12,20 +12,22 @@ public class AlertService {
     @Value("${vacations.application.ui.title}")
     private String title;
 
-    public void info(String header, String content) {
+    public <T> T info(String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.show();
+        return null;
     }
 
-    public void warn(String header, String content) {
+    public <T> T warn(String header, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.show();
+        return null;
     }
 
     public <T> T error(String header, String content) {
