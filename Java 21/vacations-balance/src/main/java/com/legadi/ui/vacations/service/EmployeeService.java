@@ -12,12 +12,16 @@ import static com.legadi.ui.vacations.common.ConfigConstants.FILE_TO_ANALYZE_LOC
 import static com.legadi.ui.vacations.common.ConfigConstants.PREVIOUS_VACATIONS_DAYS_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.RATIO_DAYS_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.START_DATE_CELL;
+import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_DAYS_HALF_YEAR;
+import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_DAYS_YEAR;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_TAKEN_DAYS_COLUMN;
 import static com.legadi.ui.vacations.common.Utils.isNumber;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -30,17 +34,17 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.legadi.ui.vacations.common.AlertMessage;
 import com.legadi.ui.vacations.common.CellRef;
 import com.legadi.ui.vacations.common.CellValue;
-import com.legadi.ui.vacations.common.AlertMessage;
 import com.legadi.ui.vacations.model.Employee;
 import com.legadi.ui.vacations.model.EmployeeBalance;
 import com.legadi.ui.vacations.model.EmployeeYear;
@@ -79,7 +83,101 @@ public class EmployeeService {
     }
 
     public void calculateBalance(EmployeeBalance employeeBalance) {
+        calculateBalanceDays(employeeBalance);
+        calculateRatioDays(employeeBalance);
 
+        logger.info("[{}] balance={} ratio={}", employeeBalance.getName(),
+            employeeBalance.getBalanceDays(), employeeBalance.getRatioDays());
+    }
+
+    private void calculateBalanceDays(EmployeeBalance employeeBalance) {
+        int totalDaysYear = configService.getInt(TOTAL_DAYS_YEAR);
+        int totalDaysHalfYear = configService.getInt(TOTAL_DAYS_HALF_YEAR);
+        List<YearRecord> takenYears = employeeBalance.getYearRecords().values()
+            .stream()
+            .filter(y -> y.getTakenByYear() > 0)
+            .sorted(Comparator.comparing(YearRecord::getYear))
+            .toList();
+
+        logger.info("[{}] startDate={} previousVacationDays={}", employeeBalance.getName(),
+            employeeBalance.getStartDate(), employeeBalance.getPreviousVacationDays());
+
+        int pendingDays = 0;
+        int exceededDays = employeeBalance.getPreviousVacationDays();
+        LocalDate today = LocalDate.now();
+
+        for(YearRecord yearRecord : takenYears) {
+            LocalDate anniversaryDate = LocalDate.of(yearRecord.getYear(),
+                employeeBalance.getStartDate().getMonthValue(),
+                employeeBalance.getStartDate().getDayOfMonth());
+            int takenDaysBalance = yearRecord.getTakenByYear() + exceededDays;
+            exceededDays = 0;
+
+            if(today.isBefore(anniversaryDate)) {
+                logger.info("[{}] allowedOnYear={} taken={} takenBalance={} anniversary[UNFULFILLED]={}",
+                    employeeBalance.getName(), yearRecord.getYear(), yearRecord.getAllowedByYear(),
+                    yearRecord.getTakenByYear(), takenDaysBalance, anniversaryDate);
+                exceededDays += takenDaysBalance;
+                continue;
+            }
+
+            int leftoversDays = 0;
+
+            if(takenDaysBalance > yearRecord.getAllowedByYear()) {
+                exceededDays = takenDaysBalance - yearRecord.getAllowedByYear();
+            } else {
+                leftoversDays = yearRecord.getAllowedByYear() - takenDaysBalance;
+            }
+
+            LocalDate expirationDate = anniversaryDate.plusDays(totalDaysYear + totalDaysHalfYear);
+
+            if(today.isBefore(expirationDate)) {
+                int leftDaysAnniversary = (int) ChronoUnit.DAYS.between(expirationDate, today);
+
+                if(leftDaysAnniversary >= leftoversDays) {
+                    pendingDays += leftoversDays;
+                } else {
+                    pendingDays += leftoversDays - leftDaysAnniversary;
+                }
+            }
+
+            logger.info("[{}] allowedOnYear={} taken={} takenBalance={} exceeded={} pending={} anniversary={} expiration={}",
+                employeeBalance.getName(), yearRecord.getYear(), yearRecord.getAllowedByYear(),
+                yearRecord.getTakenByYear(), takenDaysBalance, exceededDays, pendingDays,
+                anniversaryDate, expirationDate);
+        }
+
+        employeeBalance.setBalanceDays(pendingDays - exceededDays);
+    }
+
+    private void calculateRatioDays(EmployeeBalance employeeBalance) {
+        int totalDaysYear = configService.getInt(TOTAL_DAYS_YEAR);
+
+        LocalDate today = LocalDate.now();
+        LocalDate anniversaryDate = LocalDate.of(today.getYear(),
+            employeeBalance.getStartDate().getMonthValue(),
+            employeeBalance.getStartDate().getDayOfMonth());
+
+        if(today.isBefore(anniversaryDate)) {
+            anniversaryDate = LocalDate.of(today.getYear() - 1,
+            employeeBalance.getStartDate().getMonthValue(),
+            employeeBalance.getStartDate().getDayOfMonth());
+        }
+
+        YearRecord yearRecord = employeeBalance.getYearRecords().get(anniversaryDate.getYear());
+        int allowedDays = yearRecord != null ? yearRecord.getAllowedByYear() : 0;
+        int workedDays = (int) ChronoUnit.DAYS.between(anniversaryDate, today);
+
+        if(allowedDays == 0) {
+            logger.info("[{}] Not registered year for anniversary: {}",
+                employeeBalance.getName(), anniversaryDate);
+            employeeBalance.setRatioDays(0);
+        }
+
+        logger.info("[{}] allowedOnYear={} workedDays={} anniversary[LAST]={}",
+            employeeBalance.getName(), workedDays, anniversaryDate);
+
+        employeeBalance.setRatioDays((allowedDays / totalDaysYear) * workedDays);
     }
 
     public void saveEmployee(EmployeeBalance employeeBalance) {
