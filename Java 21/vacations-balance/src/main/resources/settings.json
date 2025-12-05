@@ -19,5 +19,9 @@
     "totalDaysYear": 365,
     "totalDaysYear.class": "java.lang.Integer",
     "totalDaysExpiration": 548,
-    "totalDaysExpiration.class": "java.lang.Integer"
+    "totalDaysExpiration.class": "java.lang.Integer",
+    "includePreviousVacationsDays": false,
+    "includePreviousVacationsDays.class": "java.lang.Boolean",
+    "createBackupOnSave": true,
+    "createBackupOnSave.class": "java.lang.Boolean"
 }

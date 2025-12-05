@@ -35,6 +35,7 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
@@ -110,6 +111,7 @@
                             <TableColumn fx:id="expirationColumn" prefWidth="96" text="Vigencia" />
                           </columns>
                         </TableView>
+                        <Button fx:id="calculateButton" layoutX="500.0" layoutY="335.0" mnemonicParsing="false" text="Calcular" visible="false" />
                         <Button fx:id="saveButton" disable="true" layoutX="566.0" layoutY="335.0" mnemonicParsing="false" text="Guardar" />
                      </children>
                   </Pane>
@@ -121,10 +123,12 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Label layoutX="14.0" layoutY="14.0" text="Celda inicial de empleado " />
+                                          <Label layoutX="14.0" layoutY="14.0" text="Celda inicial de empleado" />
                                           <TextField fx:id="configEmployeeField" layoutX="179.0" layoutY="10.0" />
+                                          <Button fx:id="configEmployeeHelpButton" layoutX="336.0" layoutY="10.0" mnemonicParsing="false" />
                                           <Label layoutX="14.0" layoutY="46.0" text="Columna de días tomados" />
                                           <TextField fx:id="configTakenField" layoutX="180.0" layoutY="42.0" />
+                                          <Button fx:id="configTakenHelpButton" layoutX="336.0" layoutY="42.0" mnemonicParsing="false" />
                                        </children>
                                     </AnchorPane>
                               </content>
@@ -133,18 +137,23 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Label layoutX="14.0" layoutY="14.0" text="Celda de compañía" />
-                                          <TextField fx:id="configCompanyField" layoutX="191.0" layoutY="10.0" />
+                                          <Label layoutX="14.0" layoutY="14.0" text="Celda de empresa" />
+                                          <TextField fx:id="configCompanyField" layoutX="176.0" layoutY="10.0" />
+                                          <Button fx:id="configCompanyHelpButton" layoutX="331.0" layoutY="10.0" mnemonicParsing="false" />
                                           <Label layoutX="14.0" layoutY="45.0" text="Celda de fecha inicial" />
-                                          <TextField fx:id="configStartField" layoutX="191.0" layoutY="41.0" />
-                                          <Label layoutX="351.0" layoutY="45.0" text="Formato de fecha" />
-                                          <TextField fx:id="configFormatField" layoutX="450.0" layoutY="41.0" />
+                                          <TextField fx:id="configStartField" layoutX="176.0" layoutY="41.0" />
+                                          <Button fx:id="configStartHelpButton" layoutX="331.0" layoutY="41.0" mnemonicParsing="false" />
+                                          <Label layoutX="381.0" layoutY="45.0" text="Formato" />
+                                          <ComboBox fx:id="configFormatBox" editable="true" layoutX="433.0" layoutY="41.0" prefWidth="150.0" />
                                           <Label layoutX="14.0" layoutY="76.0" text="Celda de balance de días" />
-                                          <TextField fx:id="configBalanceField" layoutX="191.0" layoutY="72.0" />
-                                          <Label layoutX="14.0" layoutY="107.0" text="Celda de días disfrutados" />
-                                          <TextField fx:id="configPreviousField" layoutX="191.0" layoutY="103.0" />
+                                          <TextField fx:id="configBalanceField" layoutX="176.0" layoutY="72.0" />
+                                          <Button fx:id="configBalanceHelpButton" layoutX="331.0" layoutY="72.0" mnemonicParsing="false" />
+                                          <Label layoutX="14.0" layoutY="107.0" text="Celda de días previos" />
+                                          <TextField fx:id="configPreviousField" layoutX="176.0" layoutY="103.0" />
+                                          <Button fx:id="configPreviousHelpButton" layoutX="331.0" layoutY="103.0" mnemonicParsing="false" />
                                           <Label layoutX="14.0" layoutY="138.0" text="Celda de proporción de días" />
-                                          <TextField fx:id="configRatioField" layoutX="191.0" layoutY="134.0" />
+                                          <TextField fx:id="configRatioField" layoutX="176.0" layoutY="134.0" />
+                                          <Button fx:id="configRatioHelpButton" layoutX="331.0" layoutY="134.0" mnemonicParsing="false" />
                                        </children>
                                     </AnchorPane>
                               </content>
@@ -155,11 +164,14 @@
                                        <children>
                                           <Label layoutX="14.0" layoutY="21.0" text="Celda inicial de año" />
                                           <TextField fx:id="configYearField" layoutX="136.0" layoutY="17.0" />
+                                          <Button fx:id="configYearHelpButton" layoutX="293.0" layoutY="17.0" mnemonicParsing="false" />
                                           <CheckBox fx:id="configHorizontalCheck" layoutX="15.0" layoutY="58.0" mnemonicParsing="false" text="Días en horizontal" />
                                           <Label layoutX="14.0" layoutY="99.0" text="Columna de días" />
                                           <TextField fx:id="configColDaysField" layoutX="136.0" layoutY="95.0" />
-                                          <Label layoutX="304.0" layoutY="99.0" text="Fila de días" />
-                                          <TextField fx:id="configRowDaysField" layoutX="387.0" layoutY="95.0" />
+                                          <Button fx:id="configColDaysHelpButton" layoutX="293.0" layoutY="95.0" mnemonicParsing="false" />
+                                          <Label layoutX="329.0" layoutY="99.0" text="Fila de días" />
+                                          <TextField fx:id="configRowDaysField" layoutX="412.0" layoutY="95.0" />
+                                          <Button fx:id="configRowDaysHelpButton" layoutX="568.0" layoutY="95.0" mnemonicParsing="false" />
                                        </children>
                                     </AnchorPane>
                                 </content>
@@ -174,6 +186,8 @@
                                           <TextField fx:id="configTotalYearField" layoutX="205.0" layoutY="41.0" />
                                           <Label layoutX="14.0" layoutY="76.0" text="Expiración de vacaciones en días" />
                                           <TextField fx:id="configExpirationField" layoutX="205.0" layoutY="72.0" />
+                                          <CheckBox fx:id="configIncludeCheck" layoutX="14.0" layoutY="108.0" mnemonicParsing="false" text="Incluir días previos en cálculo" />
+                                          <CheckBox fx:id="configBackupCheck" layoutX="14.0" layoutY="140.0" mnemonicParsing="false" text="Generar copia antes de guardar" />
                                        </children>
                                     </AnchorPane>
                               </content>

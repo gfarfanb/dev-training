@@ -7,6 +7,7 @@ import static com.legadi.ui.vacations.common.ConfigConstants.ALLOWED_DAYS_YEAR_F
 import static com.legadi.ui.vacations.common.ConfigConstants.BALANCE_DAYS_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.BASE_YEAR;
 import static com.legadi.ui.vacations.common.ConfigConstants.COMPANY_NAME_CELL;
+import static com.legadi.ui.vacations.common.ConfigConstants.CREATE_BACKUP_ON_SAVE;
 import static com.legadi.ui.vacations.common.ConfigConstants.EMPLOYEE_NAME_FIRST_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.FILE_TO_ANALYZE_LOCATION;
 import static com.legadi.ui.vacations.common.ConfigConstants.PREVIOUS_VACATIONS_DAYS_CELL;
@@ -15,13 +16,21 @@ import static com.legadi.ui.vacations.common.ConfigConstants.START_DATE_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_DAYS_EXPIRATION;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_DAYS_YEAR;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_TAKEN_DAYS_COLUMN;
+import static com.legadi.ui.vacations.common.ConfigConstants.INCLUDE_PREVIOUS_VACATIONS_DAYS;
 import static com.legadi.ui.vacations.common.Utils.isNumber;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +41,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
@@ -40,6 +50,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.legadi.ui.vacations.common.AlertMessage;
@@ -54,6 +65,12 @@ import com.legadi.ui.vacations.model.YearRecord;
 public class EmployeeService {
 
     private final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
+
+    @Value("${app.config.backup.location}")
+    private String backupLocation;
+
+    @Value("${app.config.backup.tag.format}")
+    private String backupTagFormat;
 
     private final ConfigService configService;
     private final AlertService alertService;
@@ -83,6 +100,10 @@ public class EmployeeService {
     }
 
     public void saveEmployee(EmployeeBalance employeeBalance) {
+        if(!createBackup()) {
+            return;
+        }
+
         CellRef previousCell = configService.getCell(PREVIOUS_VACATIONS_DAYS_CELL);
         CellRef ratioCell = configService.getCell(RATIO_DAYS_CELL);
         CellRef balanceCell = configService.getCell(BALANCE_DAYS_CELL);
@@ -107,6 +128,35 @@ public class EmployeeService {
 
             return null;
         }, null);
+    }
+
+    private boolean createBackup() {
+        boolean createBackup = configService.getBoolean(CREATE_BACKUP_ON_SAVE);
+
+        if(!createBackup) {
+            return true;
+        }
+
+        String balanceFile = configService.get(FILE_TO_ANALYZE_LOCATION);
+
+        try {
+            Path location = Paths.get(backupLocation);
+            Path balance = Paths.get(balanceFile);
+            String balanceName = FilenameUtils.removeExtension(balance.getFileName().toString());
+            String balanceExt = FilenameUtils.getExtension(balance.getFileName().toString());
+            String backupTag = LocalDateTime.now().format(DateTimeFormatter.ofPattern(backupTagFormat));
+
+            Files.createDirectories(location);
+            Files.copy(balance, location.resolve(balanceName + "-" + backupTag + "." + balanceExt),
+                StandardCopyOption.REPLACE_EXISTING);
+
+            return true;
+        } catch(Exception ex) {
+            String message = String.format(alertMessage.getUnableToBackup(), balanceFile);
+            logger.error(message, ex);
+            alertService.warn(null, message);
+            return false;
+        }
     }
 
     private <T> T readFile(FileProcessor<T> processor, T defaultValue) {
@@ -183,16 +233,26 @@ public class EmployeeService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public List<YearRecord> getValidYearsList(EmployeeBalance employeeBalance) {
-        return employeeBalance.getYearRecords().values()
-            .stream()
-            .filter(y -> y.getTakenByYear() > 0 && y.getAllowedByYear() > 0)
-            .sorted(Comparator.comparing(YearRecord::getYear))
-            .toList();
-    }
+    public void calculateBalanceDays(EmployeeBalance employeeBalance) {
+        boolean includePrevious = configService.getBoolean(INCLUDE_PREVIOUS_VACATIONS_DAYS);
+        int totayDaysExpiration = configService.getInt(TOTAL_DAYS_EXPIRATION);
+        int baseYear = configService.getInt(BASE_YEAR);
 
-    private void calculateBalanceDays(EmployeeBalance employeeBalance) {
-        List<YearRecord> validYears = getValidYearsList(employeeBalance);
+        List<YearRecord> yearRecords = employeeBalance.getYearRecords().values()
+            .stream()
+            .filter(y -> y.getTakenByYear() > 0)
+            .collect(Collectors.toList());
+
+        if(includePrevious) {
+            YearRecord previousYear = new YearRecord();
+            previousYear.setYear(baseYear - 1);
+            previousYear.setTakenByYear(employeeBalance.getPreviousVacationDays());
+            previousYear.setExpiration(LocalDate.of(previousYear.getYear(), 1, 1)
+                .plusDays(totayDaysExpiration));
+            yearRecords.add(previousYear);
+        }
+
+        Collections.sort(yearRecords, Comparator.comparing(YearRecord::getYear));
 
         logger.info("[{}] startDate={}", employeeBalance.getName(),
             employeeBalance.getStartDate());
@@ -200,7 +260,7 @@ public class EmployeeService {
         LocalDate today = LocalDate.now();
         int balanceDays = 0;
 
-        for(YearRecord yearRecord : validYears) {
+        for(YearRecord yearRecord : yearRecords) {
             int pendingDays = yearRecord.getAllowedByYear() - yearRecord.getTakenByYear();
 
             if(pendingDays > 0 && today.isAfter(yearRecord.getExpiration())) {

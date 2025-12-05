@@ -20,4 +20,6 @@ public final class ConfigConstants {
     public static final String BASE_YEAR = "baseYear";
     public static final String TOTAL_DAYS_YEAR = "totalDaysYear";
     public static final String TOTAL_DAYS_EXPIRATION = "totalDaysExpiration";
+    public static final String INCLUDE_PREVIOUS_VACATIONS_DAYS = "includePreviousVacationsDays";
+    public static final String CREATE_BACKUP_ON_SAVE = "createBackupOnSave";
 }

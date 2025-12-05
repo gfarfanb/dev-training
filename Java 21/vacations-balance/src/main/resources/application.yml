@@ -7,6 +7,12 @@ vacations:
 app:
   config:
     location: ${java.io.tmpdir}vacations-balance\config.json
+    backup:
+      location: ./respaldo
+      tag:
+        format: yyyyMMdd-HHmmss-SSS
+  date:
+    formats: dd/MM/yyyy, MM/dd/yyyy, yyyy/MM/dd, dd-MM-yyyy, MM-dd-yyyy, yyyy-MM-dd
 
 alert:
   messages:
@@ -21,6 +27,21 @@ alert:
     balance-not-found: 'Balance no encontrado para empleado: %s'
     employee-saved: 'Balance de empleado "%s" guardado correctamente'
     year-not-registered: 'Año no registrado para aniversario: %s'
+    unable-to-backup: 'No se pudo generar respaldo: %s'
+
+component:
+  texts:
+    employee-name-first-cell-help: Celda inicial de empleado
+    total-taken-days-column-help: Columna de días tomados
+    company-name-cell-help: Celda de empresa
+    start-date-cell-help: Celda de fecha inicial
+    balance-days-cell-help: Celda de balance de días
+    previous-vacations-days-cell-help: Celda de días de vacaciones previos
+    ratio-days-cell-help: Celda de proporción de días
+    allowed-days-year-first-cell-help: Celda inicial de año
+    allowed-days-value-column-help: Columna de días
+    allowed-days-value-row-help: Fila de días
+    accept-button: Aceptar
 
 logging:
   level:

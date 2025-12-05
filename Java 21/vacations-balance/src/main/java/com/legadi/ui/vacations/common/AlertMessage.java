@@ -22,4 +22,5 @@ public class AlertMessage {
     private String balanceNotFound;
     private String employeeSaved;
     private String yearNotRegistered;
+    private String unableToBackup;
 }
