@@ -13,13 +13,13 @@ import static com.legadi.ui.vacations.common.ConfigConstants.PREVIOUS_VACATIONS_
 import static com.legadi.ui.vacations.common.ConfigConstants.RATIO_DAYS_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.START_DATE_CELL;
 import static com.legadi.ui.vacations.common.ConfigConstants.START_DATE_FORMAT;
-import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_DAYS_HALF_YEAR;
+import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_DAYS_EXPIRATION;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_DAYS_YEAR;
 import static com.legadi.ui.vacations.common.ConfigConstants.TOTAL_TAKEN_DAYS_COLUMN;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +100,7 @@ public class AppController {
     @FXML
     private TableColumn<YearRecord, Integer> takenColumn;
     @FXML
-    private Button calculateButton;
+    private TableColumn<YearRecord, LocalDate> expirationColumn;
     @FXML
     private Button saveButton;
 
@@ -133,7 +133,7 @@ public class AppController {
     @FXML
     private TextField configTotalYearField;
     @FXML
-    private TextField configHalfYearField;
+    private TextField configExpirationField;
     @FXML
     private Button configResetButton;
     @FXML
@@ -185,8 +185,8 @@ public class AppController {
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
         allowedColumn.setCellValueFactory(new PropertyValueFactory<>("allowedByYear"));
         takenColumn.setCellValueFactory(new PropertyValueFactory<>("takenByYear"));
+        expirationColumn.setCellValueFactory(new PropertyValueFactory<>("expiration"));
 
-        calculateButton.setOnAction(event -> calculateBalance());
         saveButton.setOnAction(event -> saveEmployee());
 
         fileMenu.setOnAction(event -> {
@@ -249,7 +249,6 @@ public class AppController {
         ratioField.setText(null);
         balanceField.setText(null);
         yearTable.setItems(FXCollections.emptyObservableList());
-        calculateButton.setDisable(true);
         saveButton.setDisable(true);
         currentEmployeeBalance = null;
     }
@@ -266,17 +265,13 @@ public class AppController {
         ratioField.setText(Integer.toString(currentEmployeeBalance.getRatioDays()));
         balanceField.setText(Integer.toString(currentEmployeeBalance.getBalanceDays()));
 
-        List<YearRecord> yearRecords = currentEmployeeBalance.getYearRecords().values()
-                .stream()
-                .sorted(Comparator.comparing(YearRecord::getYear))
-                .toList();
+        List<YearRecord> yearRecords = employeeService.getValidYearsList(currentEmployeeBalance);
         yearTable.setItems(FXCollections.observableList(yearRecords));
     }
 
     private void loadEmployeeBalance(EmployeeYear employeeYear) {
         currentEmployeeBalance = employeeService.getEmployeeBalance(employeeYear);
 
-        calculateButton.setDisable(currentEmployeeBalance == null);
         saveButton.setDisable(currentEmployeeBalance == null);
 
         if(currentEmployeeBalance == null) {
@@ -286,13 +281,6 @@ public class AppController {
         }
 
         refreshEmployeeBalance();
-    }
-
-    private void calculateBalance() {
-        if(currentEmployeeBalance != null) {
-            employeeService.calculateBalance(currentEmployeeBalance);
-            refreshEmployeeBalance();
-        }
     }
 
     private void saveEmployee() {
@@ -322,7 +310,7 @@ public class AppController {
         configRowDaysField.setText(configService.get(ALLOWED_DAYS_VALUE_ROW));
         configBaseYearField.setText(configService.get(BASE_YEAR));
         configTotalYearField.setText(configService.get(TOTAL_DAYS_YEAR));
-        configHalfYearField.setText(configService.get(TOTAL_DAYS_HALF_YEAR));
+        configExpirationField.setText(configService.get(TOTAL_DAYS_EXPIRATION));
     }
 
     private void resetConfig() {
@@ -346,7 +334,7 @@ public class AppController {
         overrides.put(ALLOWED_DAYS_VALUE_ROW, configRowDaysField.getText());
         overrides.put(BASE_YEAR, configBaseYearField.getText());
         overrides.put(TOTAL_DAYS_YEAR, configTotalYearField.getText());
-        overrides.put(TOTAL_DAYS_HALF_YEAR, configHalfYearField.getText());
+        overrides.put(TOTAL_DAYS_EXPIRATION, configExpirationField.getText());
         configService.override(overrides);
     }
 }

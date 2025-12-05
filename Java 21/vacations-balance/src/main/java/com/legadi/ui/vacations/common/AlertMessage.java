@@ -21,4 +21,5 @@ public class AlertMessage {
     private String writeBalanceFile;
     private String balanceNotFound;
     private String employeeSaved;
+    private String yearNotRegistered;
 }

@@ -20,6 +20,7 @@ alert:
     write-balance-file: 'No se pudo guardar archivo de balance de vacaciones: %s'
     balance-not-found: 'Balance no encontrado para empleado: %s'
     employee-saved: 'Balance de empleado "%s" guardado correctamente'
+    year-not-registered: 'Año no registrado para aniversario: %s'
 
 logging:
   level:

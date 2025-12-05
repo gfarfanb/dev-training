@@ -1,5 +1,7 @@
 package com.legadi.ui.vacations.model;
 
+import java.time.LocalDate;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,4 +15,6 @@ public class YearRecord {
     private int allowedByYear;
     @EqualsAndHashCode.Exclude
     private int takenByYear;
+    @EqualsAndHashCode.Exclude
+    private LocalDate expiration;
 }

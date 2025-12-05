@@ -80,36 +80,36 @@
                <children>
                   <Pane fx:id="balancePane" prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <ListView fx:id="employeeList" layoutX="14.0" layoutY="34.0" prefHeight="326.0" prefWidth="258.0" />
+                        <ListView fx:id="employeeList" layoutX="14.0" layoutY="34.0" prefHeight="326.0" prefWidth="204.0" />
                         <Label fx:id="fileLabel" layoutX="15.0" layoutY="6.0" prefHeight="17.0" prefWidth="610.0" />
-                        <Label layoutX="287.0" layoutY="34.0" text="Compañía" />
+                        <Label layoutX="227.0" layoutY="34.0" text="Compañía" />
                         <TextField fx:id="companyField" editable="false" layoutX="477.0" layoutY="30.0" opacity="0.5" />
-                        <Label layoutX="285.0" layoutY="63.0" text="Nombre" />
+                        <Label layoutX="226.0" layoutY="63.0" text="Nombre" />
                         <TextField fx:id="nameField" editable="false" layoutX="477.0" layoutY="59.0" opacity="0.5" />
-                        <Label layoutX="285.0" layoutY="93.0" text="Fecha de alta" />
+                        <Label layoutX="226.0" layoutY="93.0" text="Fecha de alta" />
                         <TextField fx:id="startField" editable="false" layoutX="477.0" layoutY="89.0" opacity="0.5" />
-                        <Label layoutX="286.0" layoutY="123.0" text="Días disfrutados" />
-                        <TextField fx:id="previousField" layoutX="477.0" layoutY="119.0" />
-                        <Label layoutX="284.0" layoutY="152.0" text="Proporción" />
+                        <Label layoutX="226.0" layoutY="123.0" text="Días disfrutados" />
+                        <TextField fx:id="previousField" editable="false" layoutX="477.0" layoutY="119.0" opacity="0.5" />
+                        <Label layoutX="226.0" layoutY="152.0" text="Proporción" />
                         <TextField fx:id="ratioField" editable="false" layoutX="477.0" layoutY="148.0" prefHeight="25.0" prefWidth="149.0">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </TextField>
-                        <Label layoutX="285.0" layoutY="181.0" text="Saldo pendiente" />
+                        <Label layoutX="226.0" layoutY="181.0" text="Saldo pendiente" />
                         <TextField fx:id="balanceField" editable="false" layoutX="477.0" layoutY="177.0" prefHeight="25.0" prefWidth="149.0">
                           <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </TextField>
-                        <TableView fx:id="yearTable" layoutX="285.0" layoutY="212.0" prefHeight="115.0" prefWidth="341.0">
+                        <TableView fx:id="yearTable" layoutX="223.0" layoutY="212.0" prefHeight="115.0" prefWidth="403.0">
                           <columns>
-                            <TableColumn fx:id="yearColumn" prefWidth="108" text="Año" />
-                            <TableColumn fx:id="allowedColumn" prefWidth="108" text="Días permitidos" />
-                            <TableColumn fx:id="takenColumn" prefWidth="108" text="Días tomados" />
+                            <TableColumn fx:id="yearColumn" prefWidth="96" text="Año" />
+                            <TableColumn fx:id="allowedColumn" prefWidth="96" text="Permitidos" />
+                            <TableColumn fx:id="takenColumn" prefWidth="96" text="Tomados" />
+                            <TableColumn fx:id="expirationColumn" prefWidth="96" text="Vigencia" />
                           </columns>
                         </TableView>
-                        <Button fx:id="calculateButton" disable="true" layoutX="500.0" layoutY="335.0" mnemonicParsing="false" text="Calcular" />
                         <Button fx:id="saveButton" disable="true" layoutX="566.0" layoutY="335.0" mnemonicParsing="false" text="Guardar" />
                      </children>
                   </Pane>
@@ -169,11 +169,11 @@
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
                                           <Label layoutX="14.0" layoutY="14.0" text="Año base" />
-                                          <TextField fx:id="configBaseYearField" layoutX="173.0" layoutY="10.0" />
+                                          <TextField fx:id="configBaseYearField" layoutX="205.0" layoutY="10.0" />
                                           <Label layoutX="14.0" layoutY="45.0" text="Total de días al año" />
-                                          <TextField fx:id="configTotalYearField" layoutX="174.0" layoutY="41.0" />
-                                          <Label layoutX="11.0" layoutY="77.0" text="Total de días a medio año" />
-                                          <TextField fx:id="configHalfYearField" layoutX="174.0" layoutY="73.0" />
+                                          <TextField fx:id="configTotalYearField" layoutX="205.0" layoutY="41.0" />
+                                          <Label layoutX="14.0" layoutY="76.0" text="Expiración de vacaciones en días" />
+                                          <TextField fx:id="configExpirationField" layoutX="205.0" layoutY="72.0" />
                                        </children>
                                     </AnchorPane>
                               </content>

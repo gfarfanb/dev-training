@@ -18,6 +18,6 @@
     "baseYear.class": "java.lang.Integer",
     "totalDaysYear": 365,
     "totalDaysYear.class": "java.lang.Integer",
-    "totalDaysHalfYear": 183,
-    "totalDaysHalfYear.class": "java.lang.Integer"
+    "totalDaysExpiration": 548,
+    "totalDaysExpiration.class": "java.lang.Integer"
 }

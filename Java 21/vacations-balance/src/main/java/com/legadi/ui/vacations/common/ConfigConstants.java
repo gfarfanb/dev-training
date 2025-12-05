@@ -19,5 +19,5 @@ public final class ConfigConstants {
     public static final String COMPANY_NAME_CELL = "companyNameCell";
     public static final String BASE_YEAR = "baseYear";
     public static final String TOTAL_DAYS_YEAR = "totalDaysYear";
-    public static final String TOTAL_DAYS_HALF_YEAR = "totalDaysHalfYear";
+    public static final String TOTAL_DAYS_EXPIRATION = "totalDaysExpiration";
 }
