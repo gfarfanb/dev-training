@@ -1,8 +1,7 @@
 
-# Python 3
+# Python
 
-
-## Environments
+## Terminal
 
 Create virtual environment
 ```sh
@@ -22,7 +21,6 @@ deactivate
 ```
 
 
-## Books
+## Resources
 
 - [Automate the Boring Stuff with Python, 2nd Edition](https://automatetheboringstuff.com/)
-    - [dir://python/automate-the-boring-stuff-with-python](https://github.com/gfarfanb/ai-training/tree/main/python/automate-the-boring-stuff-with-python)
