@@ -1,7 +1,7 @@
 package com.legadi.jdk9.features.module_tester.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.startsWith;
 
 import org.junit.jupiter.api.Test;
@@ -16,13 +16,13 @@ public class ModuleTest {
     void module_Requires_Instantiation() {
         JDK8FeatureService service = new JDK8FeatureService();
 
-        assertThat(service.getPlatformFeatures(), hasItem(startsWith("JDK 8")));
+        assertThat(service.getPlatformFeatures(), everyItem(startsWith("JDK 8")));
     }
 
     @Test
     void module_RequiresTransitive_Instantiation() {
         FeatureService service = new JDK9FeatureService();
 
-        assertThat(service.getPlatformFeatures(), hasItem(startsWith("JDK 9")));
+        assertThat(service.getPlatformFeatures(), everyItem(startsWith("JDK 9")));
     }
 }

@@ -20,7 +20,7 @@ import com.legadi.jdk9.features.module_tester.exception.UnnexpectedCaseException
 public class OptionalTest {
 
     @Test
-    void optional_ifPresentOrElse_Usage() {
+    void ifPresentOrElse_Usage() {
         Optional<Integer> optional = Optional.empty();
 
         assertThrows(ExpectedCaseException.class,
@@ -31,7 +31,7 @@ public class OptionalTest {
     }
 
     @Test
-    void optional_or_Usage() {
+    void or_Usage() {
         Optional<Integer> optional = Optional.empty();
 
         int result = assertDoesNotThrow(() -> optional.or(() -> Optional.of(5)).get());
@@ -40,7 +40,7 @@ public class OptionalTest {
     }
 
     @Test
-    void optional_stream_Usage() {
+    void stream_Usage() {
         Stream<Optional<Integer>> stream = Stream.of(
             Optional.empty(),
             Optional.of(5),
