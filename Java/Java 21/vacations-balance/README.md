@@ -3,7 +3,8 @@
 
 ## VS Code configuration
 
-```json
+**\<PROJECT_DIR>/.vscode/launch.json**
+```json title="launch.json"
 {
     "type": "java",
     "javaExec": "<JAVA_HOME>\\bin\\java.exe",
