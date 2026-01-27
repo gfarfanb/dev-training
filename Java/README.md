@@ -10,6 +10,35 @@
 }
 ```
 
+**\<PROJECT_DIR>/.vscode/launch.json**
+```json title="launch.json"
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "javaExec": "<JAVA_HOME>\\bin\\java.exe",
+            "name": "[<ENV>] <CLASS-NAME> [<PROJECT>]",
+            "request": "launch",
+            "mainClass": "<MAIN-CLASS>",
+            "projectName": "<PROJECT>",
+            "args": [
+                "<ARG-1>",
+                "<ARG-2>",
+            ],
+            "vmArgs": [
+                "<VM-ARG-1>=<VALUE>",
+                "<VM-ARG-2>=<VALUE>",
+            ],
+            "env": {
+                "<ENV-VAR-1>": "<VALUE>",
+                "<ENV-VAR-2>": "<VALUE>"
+            }
+        }
+    ]
+}
+```
+
 ## Resources
 
 - [Archived OpenJDK Releases](https://jdk.java.net/archive/)
