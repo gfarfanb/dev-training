@@ -7,6 +7,11 @@ import com.legadi.jdk9.features.module_a.service.FeatureService;
 public class JDK8FeatureService implements FeatureService {
 
     @Override
+    public String module() {
+        return "module.b";
+    }
+
+    @Override
     public String platform() {
         return "JDK 8";
     }

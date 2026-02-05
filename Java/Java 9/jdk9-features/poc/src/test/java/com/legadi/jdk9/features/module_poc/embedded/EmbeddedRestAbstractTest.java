@@ -1,4 +1,4 @@
-package com.legadi.jdk9.features.module_tester.embedded;
+package com.legadi.jdk9.features.module_poc.embedded;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;

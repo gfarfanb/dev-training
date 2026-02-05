@@ -20,7 +20,7 @@
         <module>module_a</module>
         <module>module_b</module>
         <module>module_c</module>
-        <module>tester</module>
+        <module>poc</module>
     </modules>
 
     <dependencies></dependencies>

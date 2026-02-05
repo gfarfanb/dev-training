@@ -1,4 +1,4 @@
-package com.legadi.jdk9.features.module_tester.poc;
+package com.legadi.jdk9.features.module_poc.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-public class CollectionsTest {
+public class CollectionsPocTest {
 
     @Test
     public void list_of_Usage() {

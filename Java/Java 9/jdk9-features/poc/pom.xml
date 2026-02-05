@@ -9,7 +9,7 @@
         <version>${global.version}</version>
     </parent>
 
-    <artifactId>jdk9-features-tester</artifactId>
+    <artifactId>jdk9-features-poc</artifactId>
 
     <properties>
         <spring.boot.version>2.7.18</spring.boot.version>

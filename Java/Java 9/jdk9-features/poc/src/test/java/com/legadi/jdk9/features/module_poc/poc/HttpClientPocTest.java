@@ -1,4 +1,4 @@
-package com.legadi.jdk9.features.module_tester.poc;
+package com.legadi.jdk9.features.module_poc.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -19,12 +19,12 @@ import jdk.incubator.http.HttpResponse.BodyHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.legadi.jdk9.features.module_tester.embedded.EmbeddedRestAbstractTest;
+import com.legadi.jdk9.features.module_poc.embedded.EmbeddedRestAbstractTest;
 
-public class HttpClientTest extends EmbeddedRestAbstractTest {
+public class HttpClientPocTest extends EmbeddedRestAbstractTest {
 
     @Test
-    public void send_Usage() throws URISyntaxException, IOException, InterruptedException {
+    public void httpClient_send_Usage() throws URISyntaxException, IOException, InterruptedException {
         String body = "{\"name\": \"test\"}";
 
         HttpClient httpClient = HttpClient.newHttpClient();

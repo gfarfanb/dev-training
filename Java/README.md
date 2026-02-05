@@ -1,6 +1,26 @@
 
 # Java
 
+## PoC Test naming convention
+
+Name for the evaluation of the new objects functionalities
+```java
+// Template: [class-name]_[method-name]_Usage
+@Test
+public void optional_of_Usage() {
+    // ...
+}
+```
+
+Name for the evaluation of the new type of implementations
+```java
+// Template: [reference]_[implemented-feature]_Implementation
+@Test
+public void module_classInstantiation_Implementation() {
+    // ...
+}
+```
+
 ## VS Code configuration
 
 **\<PROJECT_DIR>/.vscode/settings.json**

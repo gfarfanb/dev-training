@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 
 public interface FeatureService {
 
+    String module();
+
     String platform();
 
     Stream<String> features();
@@ -17,6 +19,6 @@ public interface FeatureService {
     }
 
     private String prefix(String feature) {
-        return platform() + ": " + feature;
+        return "[" + module() + "] " + platform() + ": " + feature;
     }
 }

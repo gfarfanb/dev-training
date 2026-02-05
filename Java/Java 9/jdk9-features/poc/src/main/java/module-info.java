@@ -1,4 +1,4 @@
-module module.tester.main {
+module module.poc.main {
 
     requires module.b;
     requires module.c;
