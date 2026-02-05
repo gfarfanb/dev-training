@@ -51,3 +51,7 @@
 
 ### Java 8
 - [Java™ Platform, Standard Edition 8 API Specification](https://docs.oracle.com/javase/8/docs/api/index.html)
+
+### VS Code
+- [Running and debugging Java](https://code.visualstudio.com/docs/java/java-debugging)
+- [Testing Java with Visual Studio Code](https://code.visualstudio.com/docs/java/java-testing)
