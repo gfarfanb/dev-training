@@ -6,33 +6,37 @@
 **\<PROJECT_DIR>/.vscode/settings.json**
 ```json title="settings.json"
 {
-    "java.jdt.ls.java.home": "<JAVA_HOME>"
+    "java.jdt.ls.java.home": "<java-home-path>"
 }
 ```
 
 **\<PROJECT_DIR>/.vscode/launch.json**
 ```json title="launch.json"
 {
+    // ...
     "version": "0.2.0",
     "configurations": [
         {
             "type": "java",
-            "javaExec": "<JAVA_HOME>\\bin\\java.exe",
-            "name": "[<ENV>] <CLASS-NAME> [<PROJECT>]",
+            "javaExec": "<java-exec-path>",
+            "name": "[<env>] <class-name> [<project>]",
             "request": "launch",
-            "mainClass": "<MAIN-CLASS>",
-            "projectName": "<PROJECT>",
+            "mainClass": "<main-class>",
+            "projectName": "<project>",
             "args": [
-                "<ARG-1>",
-                "<ARG-2>",
+                "-xvf",
+                "-Dspring.profiles.active=<profile>",
+                "<other-arg>",
             ],
             "vmArgs": [
-                "<VM-ARG-1>=<VALUE>",
-                "<VM-ARG-2>=<VALUE>",
+                "--module-path=<module-lib-path>",
+                "--add-modules=<module-name,...,module-name-x>",
+                "<other-vm-arg>=<value>",
             ],
             "env": {
-                "<ENV-VAR-1>": "<VALUE>",
-                "<ENV-VAR-2>": "<VALUE>"
+                "PATH": "<path-value>",
+                "SPRING_PROFILES_ACTIVE": "<profile>",
+                "<other-env-var>": "<value>"
             }
         }
     ]
