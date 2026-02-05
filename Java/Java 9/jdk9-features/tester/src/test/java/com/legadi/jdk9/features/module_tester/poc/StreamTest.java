@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 public class StreamTest {
 
     @Test
-    void filter_Usage() {
+    public void filter_Usage() {
         List<Integer> result = Stream.of(1, 2, 3, 4, 5, 4, 3, 2, 1)
             .filter(n -> n < 5)
             .collect(Collectors.toList());
@@ -31,7 +31,7 @@ public class StreamTest {
     }
 
     @Test
-    void takeWhile_Usage() {
+    public void takeWhile_Usage() {
         List<Integer> result = Stream.of(1, 2, 3, 4, 5, 4, 3, 2, 1)
             .takeWhile(n -> n < 5)
             .collect(Collectors.toList());
@@ -42,7 +42,7 @@ public class StreamTest {
     }
 
     @Test
-    void dropWhile_Usage() {
+    public void dropWhile_Usage() {
         List<Integer> result = Stream.of(1, 2, 3, 4, 5, 4, 3, 2, 1)
             .dropWhile(n -> n < 5)
             .collect(Collectors.toList());
@@ -52,7 +52,7 @@ public class StreamTest {
     }
 
     @Test
-    void ofNullable_Usage() {
+    public void ofNullable_Usage() {
         Integer value = null;
         Stream<Integer> stream = assertDoesNotThrow(
             () -> Stream.ofNullable(value)
@@ -62,7 +62,7 @@ public class StreamTest {
     }
 
     @Test
-    void iterate_Usage() {
+    public void iterate_Usage() {
         final int limit = 100;
         List<Integer> result = Stream.iterate(0, n -> n < limit, n -> n + 1)
             .collect(Collectors.toList());

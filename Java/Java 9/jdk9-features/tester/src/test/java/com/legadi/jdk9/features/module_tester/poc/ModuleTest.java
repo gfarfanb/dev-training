@@ -13,14 +13,14 @@ import com.legadi.jdk9.features.module_c.service.JDK9FeatureService;
 public class ModuleTest {
 
     @Test
-    void module_Requires_Instantiation() {
+    public void module_Requires_Instantiation() {
         JDK8FeatureService service = new JDK8FeatureService();
 
         assertThat(service.getPlatformFeatures(), everyItem(startsWith("JDK 8")));
     }
 
     @Test
-    void module_RequiresTransitive_Instantiation() {
+    public void module_RequiresTransitive_Instantiation() {
         FeatureService service = new JDK9FeatureService();
 
         assertThat(service.getPlatformFeatures(), everyItem(startsWith("JDK 9")));
