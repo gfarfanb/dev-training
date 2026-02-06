@@ -11,5 +11,6 @@
 
     <artifactId>jdk9-features-module-a</artifactId>
 
-    <dependencies></dependencies>
+    <dependencies>
+    </dependencies>
 </project>
