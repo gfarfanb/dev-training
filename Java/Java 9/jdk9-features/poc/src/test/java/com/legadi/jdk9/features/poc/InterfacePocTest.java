@@ -1,4 +1,4 @@
-package com.legadi.jdk9.features.module_poc.poc;
+package com.legadi.jdk9.features.poc;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class InterfacePocTest {
 
     @Test
-    public void interface_privateMethod_Implementation() {
+    public void interface_privateMethod_implementation() {
         Feature feature = new Feature() {};
 
         assertDoesNotThrow(

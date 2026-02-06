@@ -1,4 +1,4 @@
-package com.legadi.jdk9.features.module_poc.poc;
+package com.legadi.jdk9.features.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 public class OptionalPocTest {
 
     @Test
-    public void optional_ifPresentOrElse_Usage() {
+    public void optional_ifPresentOrElse_usage() {
         Optional<Integer> optional = Optional.empty();
 
         assertThrows(ExpectedCaseException.class,
@@ -28,7 +28,7 @@ public class OptionalPocTest {
     }
 
     @Test
-    public void optional_or_Usage() {
+    public void optional_or_usage() {
         Optional<Integer> optional = Optional.empty();
 
         int result = assertDoesNotThrow(() -> optional.or(() -> Optional.of(5)).get());
@@ -37,7 +37,7 @@ public class OptionalPocTest {
     }
 
     @Test
-    public void optional_stream_Usage() {
+    public void optional_stream_usage() {
         Stream<Optional<Integer>> stream = Stream.of(
             Optional.empty(),
             Optional.of(5),

@@ -1,4 +1,4 @@
-package com.legadi.jdk9.features.module_poc.poc;
+package com.legadi.jdk9.features.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.everyItem;
@@ -37,21 +37,21 @@ import com.legadi.jdk9.features.module_c.service.JDK9FeatureService;
 public class ModulePocTest {
 
     @Test
-    public void moduleA_classInstantiation_Implementation() {
+    public void moduleA_classInstantiation_implementation() {
         FeatureService service = new FeatureServiceImpl();
 
         assertThat(service.getPlatformFeatures(), everyItem(startsWith("[module.a]")));
     }
 
     @Test
-    public void moduleB_classInstantiation_Implementation() {
+    public void moduleB_classInstantiation_implementation() {
         JDK8FeatureService service = new JDK8FeatureService();
 
         assertThat(service.getPlatformFeatures(), everyItem(startsWith("[module.b]")));
     }
 
     @Test
-    public void moduleC_classInstantiation_Implementation() {
+    public void moduleC_classInstantiation_implementation() {
         FeatureService service = new JDK9FeatureService();
 
         assertThat(service.getPlatformFeatures(), everyItem(startsWith("[module.c]")));

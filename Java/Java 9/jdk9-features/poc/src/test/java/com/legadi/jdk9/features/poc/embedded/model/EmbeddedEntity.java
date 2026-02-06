@@ -1,4 +1,4 @@
-package com.legadi.jdk9.features.module_poc.embedded.model;
+package com.legadi.jdk9.features.poc.embedded.model;
 
 import lombok.Getter;
 import lombok.Setter;

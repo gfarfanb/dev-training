@@ -1,4 +1,4 @@
-package com.legadi.jdk9.features.module_poc.poc;
+package com.legadi.jdk9.features.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class CollectionsPocTest {
 
     @Test
-    public void list_of_Usage() {
+    public void list_of_usage() {
         List<String> list = List.of("JDK 8", "JDK 9");
 
         assertThat(list, hasSize(2));
@@ -23,7 +23,7 @@ public class CollectionsPocTest {
     }
 
     @Test
-    public void set_of_Usage() {
+    public void set_of_usage() {
         Set<String> set = Set.of("JDK 8", "JDK 9");
 
         assertThat(set, hasSize(2));
@@ -32,7 +32,7 @@ public class CollectionsPocTest {
     }
 
     @Test
-    public void map_of_Usage() {
+    public void map_of_usage() {
         Map<String, String> map = Map.of("8", "JDK 8", "9", "JDK 9");
 
         assertThat(map, hasEntry("8", "JDK 8"));

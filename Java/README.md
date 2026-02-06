@@ -5,18 +5,18 @@
 
 Name for the evaluation of the new objects functionalities
 ```java
-// Template: [class-name]_[method-name]_Usage
+// Template: [class-name]_[method-name]_usage
 @Test
-public void optional_of_Usage() {
+public void optional_of_usage() {
     // ...
 }
 ```
 
 Name for the evaluation of the new type of implementations
 ```java
-// Template: [reference]_[implemented-feature]_Implementation
+// Template: [reference]_[implemented-feature]_implementation
 @Test
-public void module_classInstantiation_Implementation() {
+public void module_classInstantiation_implementation() {
     // ...
 }
 ```

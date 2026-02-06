@@ -9,10 +9,10 @@ module module.poc.test {
     requires org.junit.jupiter.api;
     requires org.hamcrest;
 
-    opens com.legadi.jdk9.features.module_poc.embedded to spring.core;
+    opens com.legadi.jdk9.features.poc.embedded to spring.core;
 
-    exports com.legadi.jdk9.features.module_poc.embedded;
-    exports com.legadi.jdk9.features.module_poc.embedded.controller;
-    exports com.legadi.jdk9.features.module_poc.embedded.model;
-    exports com.legadi.jdk9.features.module_poc.poc;
+    exports com.legadi.jdk9.features.poc.embedded;
+    exports com.legadi.jdk9.features.poc.embedded.controller;
+    exports com.legadi.jdk9.features.poc.embedded.model;
+    exports com.legadi.jdk9.features.poc;
 }
