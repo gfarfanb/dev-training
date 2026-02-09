@@ -26,7 +26,13 @@ public void module_classInstantiation_implementation() {
 **\<PROJECT_DIR>/.vscode/settings.json**
 ```json title="settings.json"
 {
-    "java.jdt.ls.java.home": "<java-home-path>"
+    "java.jdt.ls.java.home": "<java-home-path>",
+    "search.exclude": {
+        "**/target": true,
+        "**/.git": true,
+        "**/tmp": true,
+        "**/log": true,
+    },
 }
 ```
 
