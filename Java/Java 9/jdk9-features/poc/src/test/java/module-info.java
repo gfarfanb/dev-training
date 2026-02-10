@@ -13,6 +13,5 @@ module module.poc.test {
 
     exports com.legadi.jdk9.features.poc.embedded;
     exports com.legadi.jdk9.features.poc.embedded.controller;
-    exports com.legadi.jdk9.features.poc.embedded.model;
     exports com.legadi.jdk9.features.poc;
 }
