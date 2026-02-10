@@ -9,8 +9,6 @@
 
     <properties>
         <java.version>16</java.version>
-        <maven.compiler.target>16</maven.compiler.target>
-        <maven.compiler.source>16</maven.compiler.source>
         <global.version>1.0.0-SNAPSHOT</global.version>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <junit.version>5.14.2</junit.version>

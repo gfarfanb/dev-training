@@ -78,3 +78,9 @@ public void module_classInstantiation_implementation() {
 ### VS Code
 - [Running and debugging Java](https://code.visualstudio.com/docs/java/java-debugging)
 - [Testing Java with Visual Studio Code](https://code.visualstudio.com/docs/java/java-testing)
+
+### Blog Refs
+
+- [Spring Version Compatibility Cheatsheet](https://stevenpg.com/posts/spring-compat-cheatsheet/)
+- [JUnit 6 Tutorial with Examples](https://howtodoinjava.com/junit/junit-6-tutorial/)
+- [Java Versions and Features](https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features)
