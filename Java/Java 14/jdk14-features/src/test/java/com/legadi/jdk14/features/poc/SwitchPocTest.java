@@ -1,11 +1,10 @@
-package com.legadi.jdk12.features.poc;
+package com.legadi.jdk14.features.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,7 +17,12 @@ public class SwitchPocTest {
         String result = switch(version) {
             case JDK_9 -> "major";
             case JDK_10, JDK_11 -> "minor";
-            case JDK_12 -> "preview";
+            case JDK_12, JDK_13 -> {
+                String type = """
+                        preview""";
+                yield type;
+            }
+            case JDK_14 -> "standard";
             default -> "critical";
         };
 
@@ -33,10 +37,11 @@ public class SwitchPocTest {
         switch(version) {
             case JDK_9 -> result = "major";
             case JDK_10, JDK_11 -> result = "minor";
-            case JDK_12 -> {
+            case JDK_12, JDK_13 -> {
                 String value = "preview";
                 result = value;
             }
+            case JDK_14 -> result = "standard";
             default -> {
                 String value = "critical";
                 result = value;
@@ -52,12 +57,14 @@ public class SwitchPocTest {
             Arguments.of(Version.JDK_9, "major"),
             Arguments.of(Version.JDK_10, "minor"),
             Arguments.of(Version.JDK_11, "minor"),
-            Arguments.of(Version.JDK_12, "preview")
+            Arguments.of(Version.JDK_12, "preview"),
+            Arguments.of(Version.JDK_13, "preview"),
+            Arguments.of(Version.JDK_14, "standard")
         );
     }
 
     public enum Version {
 
-        JDK_8, JDK_9, JDK_10, JDK_11, JDK_12
+        JDK_8, JDK_9, JDK_10, JDK_11, JDK_12, JDK_13, JDK_14
     }
 }

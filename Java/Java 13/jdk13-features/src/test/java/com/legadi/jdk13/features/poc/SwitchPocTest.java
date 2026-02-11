@@ -37,10 +37,12 @@ public class SwitchPocTest {
             case JDK_9 -> result = "major";
             case JDK_10, JDK_11 -> result = "minor";
             case JDK_12, JDK_13 -> {
-                result = "preview";
+                String value = "preview";
+                result = value;
             }
             default -> {
-                result = "critical";
+                String value = "critical";
+                result = value;
             }
         }
 

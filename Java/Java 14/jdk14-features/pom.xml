@@ -11,6 +11,8 @@
         <java.version>14</java.version>
         <global.version>1.0.0-SNAPSHOT</global.version>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+        <jackson-databind.version>2.21.0</jackson-databind.version>
         <junit.version>5.14.2</junit.version>
         <hamcrest.version>3.0</hamcrest.version>
     </properties>
@@ -28,6 +30,13 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -52,6 +61,19 @@
                     <target>${java.version}</target>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+                    <enablePreview>true</enablePreview>
+                    <!-- <compilerArgs>
+                        <arg>-XX:+ShowCodeDetailsInExceptionMessages</arg>
+                    </compilerArgs> -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <argLine>--enable-preview</argLine>
+                    <!-- <argLine>-XX:+ShowCodeDetailsInExceptionMessages</argLine> -->
                 </configuration>
             </plugin>
         </plugins>
