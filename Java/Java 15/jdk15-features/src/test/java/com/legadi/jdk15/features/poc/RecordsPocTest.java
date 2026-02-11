@@ -1,9 +1,8 @@
-package com.legadi.jdk14.features.poc;
+package com.legadi.jdk15.features.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,7 +13,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("JEP-359")
+@Tag("JEP-384")
 @Tag("Preview")
 public class RecordsPocTest {
 
@@ -58,14 +57,33 @@ public class RecordsPocTest {
         assertThat(record.increaseSalary(25), is(625_000L));
     }
 
-    record EmployeeRecord(int id, String name, long salary) {
+    @Test
+    public void records_localRecords_implementation() {
+        int id = Math.abs(new Random().nextInt());
+        String name = UUID.randomUUID().toString();
 
-        public EmployeeRecord {
+        record WorkerRecord(int id, String name) { }
+
+        WorkerRecord worker = new WorkerRecord(id, name);
+
+        assertThat(worker.id(), is(id));
+        assertThat(worker.name(), is(name));
+    }
+
+    sealed interface CompanyPerson permits EmployeeRecord {
+
+        long increaseSalary(int percentage);
+    }
+
+    record EmployeeRecord(int id, String name, long salary) implements CompanyPerson {
+
+        EmployeeRecord {
             if(salary < 1) {
                 throw new IllegalArgumentException("salary must be greater than 0");
             }
         }
 
+        @Override
         public long increaseSalary(int percentage) {
             double pct = (double) percentage / 100;
             double increase = this.salary * pct;

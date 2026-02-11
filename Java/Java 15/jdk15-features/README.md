@@ -4,7 +4,9 @@
 ## JDK Enhancement Proposals
 
 - [JEP 358: Helpful NullPointerExceptions](https://openjdk.org/jeps/358) (released on JDK 14)
+- [JEP 360: Sealed Classes (Preview)](https://openjdk.org/jeps/360)
 - [JEP 378: Text Blocks](https://openjdk.org/jeps/378)
+- [JEP 384: Records (Second Preview)](https://openjdk.org/jeps/384)
 
 
 ## Resources
