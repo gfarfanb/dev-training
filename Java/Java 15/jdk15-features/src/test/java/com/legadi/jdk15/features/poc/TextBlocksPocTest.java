@@ -1,4 +1,4 @@
-package com.legadi.jdk14.features.poc;
+package com.legadi.jdk15.features.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -15,8 +15,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Tag("JEP-368")
-@Tag("Preview")
+@Tag("JEP-378")
 public class TextBlocksPocTest {
 
     @Test

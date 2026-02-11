@@ -73,11 +73,14 @@ public void module_classInstantiation_implementation() {
 
 ### Platform
 - [Java Platform, Standard Edition Documentation](https://docs.oracle.com/en/java/javase/index.html)
+- [JEP 0: JEP Index](https://openjdk.org/jeps/0)
 - [Archived OpenJDK Releases](https://jdk.java.net/archive/)
+
 
 ### VS Code
 - [Running and debugging Java](https://code.visualstudio.com/docs/java/java-debugging)
 - [Testing Java with Visual Studio Code](https://code.visualstudio.com/docs/java/java-testing)
+
 
 ### Blog Refs
 

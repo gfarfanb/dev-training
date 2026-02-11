@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Tag("previewfeature")
+@Tag("JEP-355")
+@Tag("Preview")
 public class TextBlocksPocTest {
 
     @Test

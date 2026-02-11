@@ -22,7 +22,8 @@ import org.junit.jupiter.api.Test;
 
 import com.legadi.jdk9.features.poc.embedded.EmbeddedRestAbstractTest;
 
-@Tag("previewfeature")
+@Tag("JEP-110")
+@Tag("Preview")
 public class HttpClientPocTest extends EmbeddedRestAbstractTest {
 
     @Test

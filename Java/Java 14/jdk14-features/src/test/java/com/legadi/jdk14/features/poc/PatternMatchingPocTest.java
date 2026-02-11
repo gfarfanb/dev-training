@@ -6,7 +6,8 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("previewfeature")
+@Tag("JEP-305")
+@Tag("Preview")
 public class PatternMatchingPocTest {
 
     @Test

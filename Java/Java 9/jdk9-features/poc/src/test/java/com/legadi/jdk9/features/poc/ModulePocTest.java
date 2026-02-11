@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.startsWith;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.legadi.jdk9.features.module_a.service.FeatureService;
@@ -34,6 +35,7 @@ import com.legadi.jdk9.features.module_c.service.JDK9FeatureService;
  *        |                 |         
  *        +-----------------+         
  */
+@Tag("JEP-261")
 public class ModulePocTest {
 
     @Test

@@ -11,7 +11,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-@Tag("previewfeature")
+@Tag("JEP-325")
+@Tag("Preview")
 public class SwitchPocTest {
 
     @ParameterizedTest

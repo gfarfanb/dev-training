@@ -14,10 +14,12 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.legadi.jdk11.features.poc.embedded.EmbeddedRestAbstractTest;
 
+@Tag("JEP-321")
 public class HttpClientPocTest extends EmbeddedRestAbstractTest {
 
     @Test

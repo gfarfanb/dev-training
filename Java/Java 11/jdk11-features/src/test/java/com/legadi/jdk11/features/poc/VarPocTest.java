@@ -5,8 +5,10 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("JEP-323")
 public class VarPocTest {
 
     @Test
