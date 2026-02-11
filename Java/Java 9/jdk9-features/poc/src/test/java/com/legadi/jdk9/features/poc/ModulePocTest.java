@@ -37,21 +37,21 @@ import com.legadi.jdk9.features.module_c.service.JDK9FeatureService;
 public class ModulePocTest {
 
     @Test
-    public void moduleA_classInstantiation_implementation() {
+    public void moduleA_sameModule_implementation() {
         FeatureService service = new FeatureServiceImpl();
 
         assertThat(service.getPlatformFeatures(), everyItem(startsWith("[module.a]")));
     }
 
     @Test
-    public void moduleB_classInstantiation_implementation() {
+    public void moduleB_usingRequires_implementation() {
         JDK8FeatureService service = new JDK8FeatureService();
 
         assertThat(service.getPlatformFeatures(), everyItem(startsWith("[module.b]")));
     }
 
     @Test
-    public void moduleC_classInstantiation_implementation() {
+    public void moduleC_usingTransitive_implementation() {
         FeatureService service = new JDK9FeatureService();
 
         assertThat(service.getPlatformFeatures(), everyItem(startsWith("[module.c]")));

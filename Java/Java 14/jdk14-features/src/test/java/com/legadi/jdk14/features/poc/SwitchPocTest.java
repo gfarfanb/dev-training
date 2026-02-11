@@ -13,7 +13,7 @@ public class SwitchPocTest {
 
     @ParameterizedTest
     @MethodSource("switch_implementation_source")
-    public void switch_expression_implementation(Version version, String expected) {
+    public void switchExpressions_lambdaAndYield_implementation(Version version, String expected) {
         String result = switch(version) {
             case JDK_9 -> "major";
             case JDK_10, JDK_11 -> "minor";
@@ -31,7 +31,7 @@ public class SwitchPocTest {
 
     @ParameterizedTest
     @MethodSource("switch_implementation_source")
-    public void switch_statement_implementation(Version version, String expected) {
+    public void switchStatement_lambdaBlocks_implementation(Version version, String expected) {
         String result;
 
         switch(version) {
@@ -46,6 +46,33 @@ public class SwitchPocTest {
                 String value = "critical";
                 result = value;
             }
+        }
+
+        assertThat(result, is(expected));
+    }
+
+    @ParameterizedTest
+    @MethodSource("switch_implementation_source")
+    public void switchStatement_traditional_implementation(Version version, String expected) {
+        String result;
+
+        switch(version) {
+            case JDK_9:
+                result = "major";
+                break;
+            case JDK_10, JDK_11:
+                result = "minor";
+                break;
+            case JDK_12, JDK_13:
+                String value = "preview";
+                result = value;
+                break;
+            case JDK_14:
+                result = "standard";
+                break;
+            default:
+                result = "unknown";
+                result = "critical";
         }
 
         assertThat(result, is(expected));

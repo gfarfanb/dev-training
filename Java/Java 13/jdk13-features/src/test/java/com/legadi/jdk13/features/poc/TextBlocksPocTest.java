@@ -6,15 +6,17 @@ import static org.hamcrest.Matchers.is;
 import java.io.IOException;
 import java.util.Map;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Tag("previewfeature")
 public class TextBlocksPocTest {
 
     @Test
-    public void string_multiline_implementation() throws IOException {
+    public void textBlock_multiline_implementation() throws IOException {
         String json = """
             {
                 "name": "Text-Blocks",
@@ -24,6 +26,7 @@ public class TextBlocksPocTest {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> object = objectMapper.readValue(json, new TypeReference<Map<String, String>>() {});
 
+        assertThat(json.lines().count(), is(4L));
         assertThat(object.get("name"), is("Text-Blocks"));
         assertThat(object.get("description"), is("PoC test to verify the text-blocks implementation"));
     }

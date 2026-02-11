@@ -3,8 +3,10 @@ package com.legadi.jdk14.features.poc;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("previewfeature")
 public class PatternMatchingPocTest {
 
     @Test

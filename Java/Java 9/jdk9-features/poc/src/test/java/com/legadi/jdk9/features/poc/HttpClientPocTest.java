@@ -17,10 +17,12 @@ import jdk.incubator.http.HttpResponse;
 import jdk.incubator.http.HttpResponse.BodyHandler;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.legadi.jdk9.features.poc.embedded.EmbeddedRestAbstractTest;
 
+@Tag("previewfeature")
 public class HttpClientPocTest extends EmbeddedRestAbstractTest {
 
     @Test

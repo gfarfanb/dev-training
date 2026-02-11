@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 public class VarPocTest {
 
     @Test
-    public void var_definition_implementation() {
+    public void var_typedVsVar_implementation() {
         String typedVar = "Test";
         var localVar = "Test";
 
@@ -20,7 +20,7 @@ public class VarPocTest {
     }
 
     @Test
-    public void var_infers_implementation() {
+    public void var_variableInference_implementation() {
         var stringVar = "Test";
         var listVar = new ArrayList<String>();
         var intVar = 5;

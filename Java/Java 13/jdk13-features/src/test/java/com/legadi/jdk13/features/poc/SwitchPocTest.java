@@ -5,15 +5,54 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+@Tag("previewfeature")
 public class SwitchPocTest {
 
     @ParameterizedTest
     @MethodSource("switch_implementation_source")
-    public void switch_expression_implementation(Version version, String expected) {
+    public void switchExpression_yieldReturn_implementation(Version version, String expected) {
+        String result = switch(version) {
+            case JDK_9:
+                yield "major";
+            case JDK_10, JDK_11:
+                yield "minor";
+            case JDK_12, JDK_13:
+                yield "preview";
+            default:
+                yield "critical";
+        };
+
+        assertThat(result, is(expected));
+    }
+
+    @ParameterizedTest
+    @MethodSource("switch_implementation_source")
+    public void switchExpression_yieldBlock_implementation(Version version, String expected) {
+        String result = switch(version) {
+            case JDK_9:
+                yield "major";
+            case JDK_10, JDK_11:
+                yield "minor";
+            case JDK_12, JDK_13: {
+                String type = """
+                        preview""";
+                yield type;
+            }
+            default:
+                yield "critical";
+        };
+
+        assertThat(result, is(expected));
+    }
+
+    @ParameterizedTest
+    @MethodSource("switch_implementation_source")
+    public void switchExpression_yieldBlockArrow_implementation(Version version, String expected) {
         String result = switch(version) {
             case JDK_9 -> "major";
             case JDK_10, JDK_11 -> "minor";
@@ -30,20 +69,16 @@ public class SwitchPocTest {
 
     @ParameterizedTest
     @MethodSource("switch_implementation_source")
-    public void switch_statement_implementation(Version version, String expected) {
-        String result;
+    public void switchStatement_noBreaksWithLambda_implementation(Version version, String expected) {
+        String result = null;
 
         switch(version) {
             case JDK_9 -> result = "major";
             case JDK_10, JDK_11 -> result = "minor";
             case JDK_12, JDK_13 -> {
-                String value = "preview";
-                result = value;
+                result = "preview";
             }
-            default -> {
-                String value = "critical";
-                result = value;
-            }
+            default -> result = "critical";
         }
 
         assertThat(result, is(expected));
