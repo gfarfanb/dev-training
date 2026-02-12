@@ -87,3 +87,7 @@ public void module_classInstantiation_implementation() {
 - [Spring Version Compatibility Cheatsheet](https://stevenpg.com/posts/spring-compat-cheatsheet/)
 - [JUnit 6 Tutorial with Examples](https://howtodoinjava.com/junit/junit-6-tutorial/)
 - [Java Versions and Features](https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features)
+- [Java 8 New Features](https://nkamphoa.com/java-8-new-features/)
+- [Java 11 New Features](https://nkamphoa.com/java-11-new-features/)
+- [Java 17 New Features](https://nkamphoa.com/java-17-new-features/)
+- [Java 21 New Features](https://nkamphoa.com/java-21-new-features/)

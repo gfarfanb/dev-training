@@ -9,6 +9,30 @@
 - [JEP 269: Convenience Factory Methods for Collections](https://openjdk.org/jeps/269)
 
 
+### Java as read-eval-print loop (REPL)
+
+Java can be prototyped by using the interactive tool *jshell*. These are some examples:
+
+Terminal:
+```sh
+jshell
+jshell> System.out.println("Hello from JShell on terminal!");
+Hello from JShell on terminal!
+
+jshell> /exit
+```
+
+As part of a script file:
+```sh
+#!/bin/bash
+jshell <<EOF
+System.out.println("Hello from Embedded JShell!");
+int a = 5;
+int b = 10;
+System.out.println("a + b = " + (a + b));
+EOF
+```
+
 ## Resources
 
 - [Java® Platform, Standard Edition & Java Development Kit Version 9 API Specification](https://docs.oracle.com/javase/9/docs/api/overview-summary.html)
