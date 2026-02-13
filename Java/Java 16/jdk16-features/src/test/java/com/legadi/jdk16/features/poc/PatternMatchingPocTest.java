@@ -1,13 +1,13 @@
-package com.legadi.jdk15.features.poc;
+package com.legadi.jdk16.features.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("JEP-375")
-@Tag("Preview")
+@Tag("JEP-394")
 public class PatternMatchingPocTest {
 
     @Test

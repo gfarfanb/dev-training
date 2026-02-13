@@ -3,6 +3,7 @@
 
 ## JDK Enhancement Proposals
 
+- [JEP 394: Pattern Matching for instanceof](https://openjdk.org/jeps/394)
 - [JEP 395: Records](https://openjdk.org/jeps/395)
 
 
