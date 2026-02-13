@@ -21,5 +21,14 @@ public class PatternMatchingPocTest {
         if (raw instanceof String name && name.length() < 5) {
             assertThat(name.length(), is(4));
         }
+
+        Object record = new PatternRecord("Test");
+
+        if(record instanceof PatternRecord patternRecord) {
+            assertThat(patternRecord.value(), is("Test"));
+        }
+    }
+
+    record PatternRecord(String value) {
     }
 }
