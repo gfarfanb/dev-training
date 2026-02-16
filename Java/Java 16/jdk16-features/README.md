@@ -5,6 +5,7 @@
 
 - [JEP 394: Pattern Matching for instanceof](https://openjdk.org/jeps/394)
 - [JEP 395: Records](https://openjdk.org/jeps/395)
+- [JEP 397: Sealed Classes (Second Preview)](https://openjdk.org/jeps/397)
 
 
 ## Resources
