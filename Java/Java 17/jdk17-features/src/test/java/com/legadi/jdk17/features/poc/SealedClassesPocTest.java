@@ -1,4 +1,4 @@
-package com.legadi.jdk16.features.poc;
+package com.legadi.jdk17.features.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -38,8 +38,7 @@ import org.junit.jupiter.api.Test;
  * | RestControllerClass  |                                         +--------------+  
  * +----------------------+                                                           
  */
-@Tag("JEP-397")
-@Tag("Preview")
+@Tag("JEP-409")
 public class SealedClassesPocTest {
 
     @Test
@@ -97,7 +96,7 @@ public class SealedClassesPocTest {
     public void sealedClasses_instanceOf_implementation() {
         Object instance = new RestControllerClass();
 
-        if(instance instanceof SpringClass springInstance) {
+        if (instance instanceof SpringClass springInstance) {
             assertThat(springInstance, equalTo(instance));
         }
 

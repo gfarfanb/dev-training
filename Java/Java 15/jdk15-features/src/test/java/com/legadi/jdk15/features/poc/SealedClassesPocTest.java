@@ -95,7 +95,7 @@ public class SealedClassesPocTest {
 
     @Test
     public void sealedClasses_instanceOf_implementation() {
-        SpringClass instance = new RestControllerClass();
+        Object instance = new RestControllerClass();
 
         if(instance instanceof SpringClass springInstance) {
             assertThat(springInstance, equalTo(instance));
