@@ -6,6 +6,7 @@
 - [JEP 356: Enhanced Pseudo-Random Number Generators](https://openjdk.org/jeps/356)
 - [JEP 406: Pattern Matching for switch (Preview)](https://openjdk.org/jeps/406)
 - [JEP 409: Sealed Classes](https://openjdk.org/jeps/409)
+- [JEP 415: Context-Specific Deserialization Filters](https://openjdk.org/jeps/415)
 
 
 ## Resources
