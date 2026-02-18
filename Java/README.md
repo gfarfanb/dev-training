@@ -12,6 +12,22 @@ public void optional_of_usage() {
 }
 ```
 
+```java
+// Template: [class-name]_[method-name]And[method-name]_usage
+@Test
+public void optional_ofAndEmpty_usage() {
+    // ...
+}
+```
+
+```java
+// Template: [class-name]_[method-name]For[case-name]_usage
+@Test
+public void optional_ofForSpecificEdgeCase_usage() {
+    // ...
+}
+```
+
 Name for the evaluation of the new type of implementations
 ```java
 // Template: [reference]_[implemented-feature]_implementation
@@ -73,10 +89,6 @@ public void module_classInstantiation_implementation() {
 
 ### Platform
 - [Java Platform, Standard Edition Documentation](https://docs.oracle.com/en/java/javase/)
-    - [Java SE 11 LTS](https://docs.oracle.com/en/java/javase/11/core/)
-    - [Java SE 17 LTS](https://docs.oracle.com/en/java/javase/17/core/)
-    - [Java SE 21 LTS](https://docs.oracle.com/en/java/javase/21/core/)
-    - [Java SE 25 LTS](https://docs.oracle.com/en/java/javase/25/core/)
 - [JEP 0: JEP Index](https://openjdk.org/jeps/0)
 - [Archived OpenJDK Releases](https://jdk.java.net/archive/)
 
@@ -90,8 +102,3 @@ public void module_classInstantiation_implementation() {
 
 - [Spring Version Compatibility Cheatsheet](https://stevenpg.com/posts/spring-compat-cheatsheet/)
 - [JUnit 6 Tutorial with Examples](https://howtodoinjava.com/junit/junit-6-tutorial/)
-- [Java Versions and Features](https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features)
-- [Java 8 New Features](https://nkamphoa.com/java-8-new-features/)
-- [Java 11 New Features](https://nkamphoa.com/java-11-new-features/)
-- [Java 17 New Features](https://nkamphoa.com/java-17-new-features/)
-- [Java 21 New Features](https://nkamphoa.com/java-21-new-features/)

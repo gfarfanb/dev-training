@@ -20,3 +20,6 @@ java SelfContainedProgram.java
 ## Resources
 
 - [Java® Platform, Standard Edition & Java Development Kit Version 11 API Specification](https://docs.oracle.com/en/java/javase/11/docs/api/index.html)
+- [Core Libraries](https://docs.oracle.com/en/java/javase/11/core/)
+- [Java 11 New Features](https://nkamphoa.com/java-11-new-features/)
+- [Java Versions and Features](https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features)

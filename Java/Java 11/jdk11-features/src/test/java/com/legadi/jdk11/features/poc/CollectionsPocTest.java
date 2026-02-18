@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-public class CollectionPocTest {
+public class CollectionsPocTest {
 
     @Test
     public void list_toArray_usage() {

@@ -67,8 +67,8 @@ public class StreamPocTest {
         List<Integer> result = Stream.iterate(0, n -> n < limit, n -> n + 1)
             .collect(Collectors.toList());
 
-        assertThat(result, hasSize(100));
+        assertThat(result, hasSize(limit));
         assertThat(result, everyItem(is(greaterThanOrEqualTo(0))));
-        assertThat(result, everyItem(is(lessThan(100))));
+        assertThat(result, everyItem(is(lessThan(limit))));
     }
 }

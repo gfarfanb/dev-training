@@ -12,3 +12,6 @@
 ## Resources
 
 - [Java® Platform, Standard Edition & Java Development Kit Version 17 API Specification](https://docs.oracle.com/en/java/javase/17/docs/api/index.html)
+- [Core Libraries](https://docs.oracle.com/en/java/javase/17/core/)
+- [Java 17 New Features](https://nkamphoa.com/java-17-new-features/)
+- [Java Versions and Features](https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features)
