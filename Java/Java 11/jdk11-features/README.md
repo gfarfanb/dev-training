@@ -8,7 +8,7 @@
 - [JEP 330: Launch Single-File Source-Code Programs](https://openjdk.org/jeps/330)
 
 
-### Running Java files
+### Running Java files (JEP 330)
 
 Standalone Java files can be executed without compiling it (no persistent Bytecode) by:
 

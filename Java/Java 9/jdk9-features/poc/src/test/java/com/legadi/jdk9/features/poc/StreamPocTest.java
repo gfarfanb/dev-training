@@ -64,11 +64,19 @@ public class StreamPocTest {
     @Test
     public void stream_iterate_usage() {
         final int limit = 100;
-        List<Integer> result = Stream.iterate(0, n -> n < limit, n -> n + 1)
+        List<Integer> resultA = Stream.iterate(0, n -> n < limit, n -> n + 1)
             .collect(Collectors.toList());
 
-        assertThat(result, hasSize(limit));
-        assertThat(result, everyItem(is(greaterThanOrEqualTo(0))));
-        assertThat(result, everyItem(is(lessThan(limit))));
+        assertThat(resultA, hasSize(limit));
+        assertThat(resultA, everyItem(is(greaterThanOrEqualTo(0))));
+        assertThat(resultA, everyItem(is(lessThan(limit))));
+
+        List<Integer> resultB = Stream.iterate(0, n -> n + 1)
+            .limit(limit)
+            .collect(Collectors.toList());
+
+        assertThat(resultB, hasSize(limit));
+        assertThat(resultB, everyItem(is(greaterThanOrEqualTo(0))));
+        assertThat(resultB, everyItem(is(lessThan(limit))));
     }
 }

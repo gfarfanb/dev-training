@@ -1,4 +1,4 @@
-package com.legadi.jdk17.features.poc;
+package com.legadi.jdk18.features.poc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
@@ -16,7 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-@Tag("JEP-406")
+@Tag("JEP-420")
 @Tag("Preview")
 public class PatternMatchingPocTest {
 

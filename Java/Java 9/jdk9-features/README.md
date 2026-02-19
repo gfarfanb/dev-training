@@ -5,11 +5,12 @@
 
 - [JEP 110: HTTP/2 Client (Incubator)](https://openjdk.org/jeps/110)
 - [JEP 213: Milling Project Coin](https://openjdk.org/jeps/213)
+- [JEP 222: jshell: The Java Shell (Read-Eval-Print Loop)](https://openjdk.org/jeps/222)
 - [JEP 261: Module System](https://openjdk.org/jeps/261)
 - [JEP 269: Convenience Factory Methods for Collections](https://openjdk.org/jeps/269)
 
 
-### Java as read-eval-print loop (REPL)
+### Java as REPL (JEP 222)
 
 Java can be prototyped by using the interactive tool *jshell*. These are some examples:
 
