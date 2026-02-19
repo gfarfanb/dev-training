@@ -1,6 +1,9 @@
 
 # Java 11
 
+>  Long-Term Support (LTS)
+
+
 ## JDK Enhancement Proposals
 
 - [JEP 321: HTTP Client API](https://openjdk.org/jeps/321)

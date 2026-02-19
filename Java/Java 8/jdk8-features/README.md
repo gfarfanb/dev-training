@@ -1,6 +1,9 @@
 
 # Java 8
 
+>  Long-Term Support (LTS)
+
+
 ## Resources
 
 - [Java™ Platform, Standard Edition 8 API Specification](https://docs.oracle.com/javase/8/docs/api/index.html)

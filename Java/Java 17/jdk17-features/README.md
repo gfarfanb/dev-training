@@ -1,6 +1,9 @@
 
 # Java 17
 
+>  Long-Term Support (LTS)
+
+
 ## JDK Enhancement Proposals
 
 - [JEP 356: Enhanced Pseudo-Random Number Generators](https://openjdk.org/jeps/356)

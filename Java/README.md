@@ -85,6 +85,18 @@ public void module_classInstantiation_implementation() {
 }
 ```
 
+## Features to review
+
+- Foreign Function & Memory API
+    - [JEP 412: Foreign Function & Memory API (Incubator)](https://openjdk.org/jeps/412)
+    - [JEP 419: Foreign Function & Memory API (Second Incubator)](https://openjdk.org/jeps/419)
+    - [JEP 424: Foreign Function & Memory API (Preview)](https://openjdk.org/jeps/424)
+    - [JEP 434: Foreign Function & Memory API (Second Preview)](https://openjdk.org/jeps/434)
+    - [JEP 434: Foreign Function & Memory API (Second Preview)](https://openjdk.org/jeps/434)
+    - [JEP 442: Foreign Function & Memory API (Third Preview)](https://openjdk.org/jeps/442)
+    - [JEP 454: Foreign Function & Memory API](https://openjdk.org/jeps/454)
+
+
 ## Resources
 
 ### Platform

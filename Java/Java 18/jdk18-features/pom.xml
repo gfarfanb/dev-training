@@ -10,9 +10,9 @@
     <properties>
         <java.version>18</java.version>
         <global.version>1.0.0-SNAPSHOT</global.version>
-        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-        <junit.version>6.0.2</junit.version>
+        <junit.version>6.0.3</junit.version>
         <hamcrest.version>3.0</hamcrest.version>
     </properties>
 
@@ -53,7 +53,6 @@
                     <target>${java.version}</target>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
-                    <enablePreview>true</enablePreview>
                     <enablePreview>true</enablePreview>
                 </configuration>
             </plugin>

@@ -1,6 +1,9 @@
 
 # Java 21
 
+>  Long-Term Support (LTS)
+
+
 ## JDK Enhancement Proposals
 
 - [JEP XXX: ...](https://openjdk.org/jeps/0)

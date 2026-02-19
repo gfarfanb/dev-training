@@ -3,25 +3,42 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.legadi.jdk9</groupId>
-    <artifactId>jdk9-features-parent</artifactId>
+    <groupId>com.legadi.jdk20</groupId>
+    <artifactId>jdk20-features-poc</artifactId>
     <version>${global.version}</version>
-    <packaging>pom</packaging>
 
     <properties>
-        <java.version>1.9</java.version>
+        <java.version>20</java.version>
         <global.version>1.0.0-SNAPSHOT</global.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <junit.version>6.0.3</junit.version>
+        <hamcrest.version>3.0</hamcrest.version>
     </properties>
 
-    <modules>
-        <module>module_a</module>
-        <module>module_b</module>
-        <module>module_c</module>
-        <module>poc</module>
-    </modules>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
