@@ -24,7 +24,8 @@ public class StringPatternMatchingTest {
         return Stream.of(
             Arguments.of("010", "amazing", 2),
             Arguments.of("010", "ama", 1),
-            Arguments.of("011", "amazing", 1)
+            Arguments.of("011", "amazing", 1),
+            Arguments.of("100", "codesignal", 0)
         );
     }
 }
