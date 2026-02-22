@@ -14,8 +14,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class LookupTableTest {
 
     @ParameterizedTest
-    @MethodSource("findPairsValidation_source")
-    public void findPairsValidation_logarithm(int[] numbers, int expected) {
+    @MethodSource("findPairs_validation_source")
+    public void findPairs_validation_logarithm(int[] numbers, int expected) {
         LookupTable target = new LookupTable(LOGARITHM);
         int output = target.findPairs(numbers);
 
@@ -23,15 +23,15 @@ public class LookupTableTest {
     }
 
     @ParameterizedTest
-    @MethodSource("findPairsValidation_source")
-    public void findPairsValidation_preCalculated(int[] numbers, int expected) {
+    @MethodSource("findPairs_validation_source")
+    public void findPairs_validation_preCalculated(int[] numbers, int expected) {
         LookupTable target = new LookupTable(PRE_CALCULATED);
         int output = target.findPairs(numbers);
 
         assertThat(output, is(expected));
     }
 
-    public static Stream<Arguments> findPairsValidation_source() {
+    public static Stream<Arguments> findPairs_validation_source() {
         return Stream.of(
             Arguments.of(new int[] { 1, -1, 2, 3 }, 5),
             Arguments.of(new int[] { -2, -1, 0, 1, 2 }, 5),

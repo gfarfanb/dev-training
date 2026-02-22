@@ -11,15 +11,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class ArrayManipulationTest {
 
     @ParameterizedTest
-    @MethodSource("transformValidation_source")
-    public void transformValidation(int[] input, int[] expected) {
+    @MethodSource("transform_validation_source")
+    public void transform_validation(int[] input, int[] expected) {
         ArrayManipulation target = new ArrayManipulation();
         int[] output = target.transform(input);
 
         assertArrayEquals(output, expected);
     }
 
-    public static Stream<Arguments> transformValidation_source() {
+    public static Stream<Arguments> transform_validation_source() {
         return Stream.of(
             Arguments.of(new int[] { 4, 0, 1, -2, 3 }, new int[] { 4, 5, -1, 2, 1 })
         );

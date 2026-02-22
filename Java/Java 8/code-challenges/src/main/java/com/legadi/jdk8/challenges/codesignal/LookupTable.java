@@ -52,7 +52,6 @@ public class LookupTable {
             default:
                 throw new IllegalStateException("Invalid power algorithm");
         }
-        
     }
 
     public enum PowerAlgorithm {

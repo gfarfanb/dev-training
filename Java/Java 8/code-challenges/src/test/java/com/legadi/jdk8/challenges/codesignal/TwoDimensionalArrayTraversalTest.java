@@ -12,15 +12,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class TwoDimensionalArrayTraversalTest {
 
     @ParameterizedTest
-    @MethodSource("choosePositionValidation_source")
-    public void choosePositionValidation(int[][] field, int[][] figure, int expected) {
+    @MethodSource("choosePosition_validation_source")
+    public void choosePosition_validation(int[][] field, int[][] figure, int expected) {
         TwoDimensionalArrayTraversal target = new TwoDimensionalArrayTraversal();
         int position = target.choosePosition(field, figure);
 
         assertThat(position, is(expected));
     }
 
-    public static Stream<Arguments> choosePositionValidation_source() {
+    public static Stream<Arguments> choosePosition_validation_source() {
         return Stream.of(
             Arguments.of(
                 new int[][] {
