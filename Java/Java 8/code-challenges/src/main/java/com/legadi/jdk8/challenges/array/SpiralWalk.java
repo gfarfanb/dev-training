@@ -1,6 +1,6 @@
 package com.legadi.jdk8.challenges.array;
 
-public class SpiralForEach {
+public class SpiralWalk {
 
     /*
      * Given a two-dimensional array:
@@ -30,7 +30,7 @@ public class SpiralForEach {
      * 2,2 --> right side (vlength - 1)
      * 2,1 --> bottom side (hlength - 1)
      */
-    public int[] spiralWalk(int[][] field) {
+    public int[] walk(int[][] field) {
         int size = field.length * field[0].length;
         int[] walk = new int[size];
 
@@ -49,30 +49,39 @@ public class SpiralForEach {
                 case 0:
                     j++;
                     if(sideWalk == hlength) {
-                        currentSide++; sideWalk = 0;
-                        i++; j--;
+                        currentSide++;
+                        sideWalk = 0;
+                        i++;
+                        j--;
                     }
                     break;
                 case 1:
                     i++;
                     if(sideWalk == vlength - 1) {
-                        currentSide++; sideWalk = 0;
-                        i--; j--;
+                        currentSide++;
+                        sideWalk = 0;
+                        i--;
+                        j--;
                     }
                     break;
                 case 2:
                     j--;
                     if(sideWalk == hlength - 1) {
-                        currentSide++; sideWalk = 0;
-                        j++; i--;
+                        currentSide++;
+                        sideWalk = 0;
+                        i--;
+                        j++;
                     }
                     break;
                 case 3:
                     i--;
                     if(sideWalk == vlength - 2) {
-                        currentSide = 0; sideWalk = 0;
-                        hlength -= 2; vlength -= 2;
-                        i++; j++;
+                        currentSide = 0;
+                        sideWalk = 0;
+                        hlength -= 2;
+                        vlength -= 2;
+                        i++;
+                        j++;
                     }
                     break;
             }

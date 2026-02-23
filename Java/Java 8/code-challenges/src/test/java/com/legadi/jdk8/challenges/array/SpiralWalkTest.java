@@ -10,13 +10,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class SpiralForEachTest {
+public class SpiralWalkTest {
 
     @ParameterizedTest
-    @MethodSource("spiralWalk_validation_source")
-    public void spiralWalk_validation(int[][] field) {
-        SpiralForEach target = new SpiralForEach();
-        int[] walk = target.spiralWalk(field);
+    @MethodSource("walk_validation_source")
+    public void walk_validation(int[][] field) {
+        SpiralWalk target = new SpiralWalk();
+        int[] walk = target.walk(field);
 
         assertArrayEquals(walk, expectedPath(field));
     }
@@ -33,7 +33,7 @@ public class SpiralForEachTest {
         return path.stream().mapToInt(Integer::intValue).sorted().toArray();
     }
 
-    public static Stream<Arguments> spiralWalk_validation_source() {
+    public static Stream<Arguments> walk_validation_source() {
         return Stream.of(
             Arguments.of(new int[][] {
                 { 1 }
