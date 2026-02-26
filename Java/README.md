@@ -103,6 +103,7 @@ public void module_classInstantiation_implementation() {
 - [Java Platform, Standard Edition Documentation](https://docs.oracle.com/en/java/javase/)
 - [JEP 0: JEP Index](https://openjdk.org/jeps/0)
 - [Archived OpenJDK Releases](https://jdk.java.net/archive/)
+- [Class File Versions](https://javaalmanac.io/bytecode/versions/)
 
 
 ### VS Code
