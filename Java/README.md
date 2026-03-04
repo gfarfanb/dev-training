@@ -42,7 +42,7 @@ public void module_classInstantiation_implementation() {
 **\<PROJECT_DIR>/.vscode/settings.json**
 ```json title="settings.json"
 {
-    "java.jdt.ls.java.home": "<java-home-path>",
+    "java.jdt.ls.java.home": "<java_home_path>",
     "search.exclude": {
         "**/target": true,
         "**/.git": true,
@@ -60,25 +60,25 @@ public void module_classInstantiation_implementation() {
     "configurations": [
         {
             "type": "java",
-            "javaExec": "<java-exec-path>",
-            "name": "[<env>] <class-name> [<project>]",
+            "javaExec": "<java_exec_path>",
+            "name": "[<env>] <class_name> [<project>]",
             "request": "launch",
-            "mainClass": "<main-class>",
+            "mainClass": "<main_class>",
             "projectName": "<project>",
             "args": [
                 "-xvf",
                 "-Dspring.profiles.active=<profile>",
-                "<other-arg>",
+                "<other_arg>",
             ],
             "vmArgs": [
-                "--module-path=<module-lib-path>",
-                "--add-modules=<module-name,...,module-name-x>",
-                "<other-vm-arg>=<value>",
+                "--module-path=<module_lib_path>",
+                "--add-modules=<module_name,...,module_name_x>",
+                "<other_vm_arg>=<value>",
             ],
             "env": {
-                "PATH": "<path-value>",
+                "PATH": "<path_value>",
                 "SPRING_PROFILES_ACTIVE": "<profile>",
-                "<other-env-var>": "<value>"
+                "<other_env_var>": "<value>"
             }
         }
     ]
