@@ -1,7 +1,7 @@
 
 # Python
 
-This is a Python repository containing different app examples, code challenges, and specific Python usage examples.
+This is a multi-version Python repository containing feature examples, code challenges, and specific Python usage examples.
 
 
 ## Terminal
