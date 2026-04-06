@@ -1,6 +1,9 @@
 
 # Python
 
+This is a Python repository containing different app examples, code challenges, and specific Python usage examples.
+
+
 ## Terminal
 
 Create virtual environment

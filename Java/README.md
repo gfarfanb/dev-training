@@ -1,6 +1,9 @@
 
 # Java
 
+This is a multi-module Java repository containing JDK feature examples (Java 8-25), code challenges, and specific Java usage examples.
+
+
 ## PoC Test naming convention
 
 Name for the evaluation of the new objects functionalities
